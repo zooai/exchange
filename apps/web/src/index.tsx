@@ -326,6 +326,8 @@ const RootApp = (): JSX.Element => {
 import { brand, loadBrandConfig } from '@l.x/config'
 
 loadBrandConfig().then(() => {
+  // @l.x/config handles document.title + favicon + theme CSS vars inside loadBrandConfig.
+
   // Inject brand values as i18n interpolation defaults so {{brandName}} etc. work in translations
   const brandVars = {
     brandName: brand.name,
