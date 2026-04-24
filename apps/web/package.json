@@ -2,7 +2,7 @@
   "name": "@zooai/exchange-web",
   "version": "1.0.0",
   "private": true,
-  "description": "Zoo Exchange — thin shim over @luxfi/exchange + @zooai/brand.",
+  "description": "Zoo Exchange \u2014 thin shim over @luxfi/exchange + @zooai/brand.",
   "license": "GPL-3.0-or-later",
   "type": "module",
   "scripts": {
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@luxfi/exchange": "^1.0.8",
-    "@zooai/brand": "^1.1.0",
+    "@zooai/brand": "^1.3.0",
     "@zooai/logo": "^1.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
