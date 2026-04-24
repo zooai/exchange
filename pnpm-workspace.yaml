@@ -1,6 +1,5 @@
 packages:
   - "apps/*"
-  - "pkgs/*"
 
 catalog:
   react-native: "npm:@hanzogui/react-native@0.79.5-fork.1"

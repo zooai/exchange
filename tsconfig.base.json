@@ -35,10 +35,6 @@
     "strictPropertyInitialization": true,
     "target": "esnext",
     "types": ["node"],
-    "useUnknownInCatchVariables": true,
-    "paths": {
-      "@l.x/provider": ["./pkgs/provider/src/index.ts"],
-      "@l.x/provider/*": ["./pkgs/provider/src/*"]
-    }
+    "useUnknownInCatchVariables": true
   }
 }
