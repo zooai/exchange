@@ -37,7 +37,6 @@
       "dependsOn": ["prepare", "^typecheck"],
       "inputs": [
         "{workspaceRoot}/package.json",
-        "{workspaceRoot}/config/tsconfig/*",
         "{workspaceRoot}/tsconfig.base.json",
         "{projectRoot}/package.json",
         "{projectRoot}/tsconfig.*.json",
@@ -59,7 +58,6 @@
       "dependsOn": ["^prepare", "prepare"],
       "inputs": [
         "{workspaceRoot}/package.json",
-        "{workspaceRoot}/config/tsconfig/*",
         "{workspaceRoot}/tsconfig.base.json",
         "{projectRoot}/package.json",
         "{projectRoot}/tsconfig.*.json",
