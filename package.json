@@ -23,8 +23,9 @@
   "overrides": {
     "@luxamm/sdk": "3.0.3"
   },
-  "description": "Zoo Exchange \u2014 the DEX for Zoo Network",
-  "license": "GPL-3.0-or-later",
+  "description": "Zoo Exchange — the DEX for Zoo Network",
+  "license": "BSD-3-Clause",
+  "author": "Zoo Labs Foundation Inc.",
   "repository": {
     "type": "git",
     "url": "https://github.com/zooai/exchange.git"
