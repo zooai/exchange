@@ -48,9 +48,5 @@
     "next-env.d.ts"
   ],
   "exclude": ["scripts/build-vercel.ts"],
-  "references": [
-    {
-      "path": "../../pkgs/provider"
-    }
-  ]
+  "references": []
 }
