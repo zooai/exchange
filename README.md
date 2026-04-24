@@ -1,59 +1,69 @@
 # Zoo Exchange
 
-[zoo.exchange](https://zoo.exchange) — the decentralized exchange for the
-Zoo ecosystem. Native trading on Zoo Network (chain ID 200200).
+[zoo.exchange](https://zoo.exchange) — white-label Zoo Network deployment
+of the **Lux Exchange** SPA. Two surfaces:
 
-## Apps
+- **Web** — Docker overlay of [`ghcr.io/luxfi/exchange`](https://github.com/luxfi/exchange)
+  + [`@zooai/brand`](https://www.npmjs.com/package/@zooai/brand) from npm.
+  Zero source code here. `Dockerfile` is ~15 lines.
+- **Mobile** — Expo app in [`apps/mobile`](apps/mobile), consumes
+  `@l.x/*` + `@luxfi/wallet` + `@zooai/brand` from npm.
 
-- `apps/web` — Vite SPA at [zoo.exchange](https://zoo.exchange)
-- `apps/mobile` — iOS + Android (Expo)
+## Architecture
 
-The browser-extension wallet lives upstream at
-[luxfi/wallet](https://github.com/luxfi/wallet). `@luxfi/wallet` on npm
-is the shared library; no extension is maintained here.
-
-## Install & run
-
-```bash
-git clone git@github.com:zooai/exchange.git
-cd exchange
-pnpm install
-pnpm web dev
+```
+ghcr.io/luxfi/exchange:latest         ←  canonical SPA (hanzoai/spa + @hanzogui bones)
+           │
+           └── FROM  (Dockerfile)
+                │
+                └── COPY /brand from @zooai/brand  ←  Zoo identity
+                       │
+                       └── K8s ConfigMap mounts /config.json  ←  chainId 200200, RPC, IAM
 ```
 
-Per-app instructions: [`apps/web/README.md`](apps/web/README.md),
-[`apps/mobile/README.md`](apps/mobile/README.md).
+**Canonical source for the SPA is upstream** at
+`~/work/lux/exchange` → `ghcr.io/luxfi/exchange`. This repo holds only
+what's Zoo-specific:
+- `Dockerfile` — the overlay recipe
+- `apps/mobile/` — the Zoo Expo app
 
-## Packages
+Nothing else. No `src/`, no `pkgs/`, no `contracts/`, no `subgraphs/`,
+no `deploy/`, no vendored configs. If you need to change the web SPA,
+send a PR to [luxfi/exchange](https://github.com/luxfi/exchange). If you
+need to change the Zoo brand, edit [`~/work/zoo/brand`](https://www.npmjs.com/package/@zooai/brand)
+and republish.
 
-Everything shared comes from npm — one canonical home at
-[luxfi/exchange](https://github.com/luxfi/exchange):
+## Customize
 
-| scope | examples |
-| --- | --- |
-| `@l.x/*` | `@l.x/lx`, `@l.x/ui`, `@l.x/utils`, `@l.x/api`, `@l.x/config`, `@l.x/gating`, `@l.x/prices`, `@l.x/sessions`, `@l.x/notifications`, `@l.x/websocket`, `@l.x/jest-preset`, `@l.x/tsconfig`, `@l.x/vitest-preset` |
-| `@luxfi/*` | `@luxfi/exchange`, `@luxfi/dex`, `@luxfi/wallet`, `@luxfi/biome-config`, `@luxfi/eslint-config` |
-| `@zooai/*` | `@zooai/brand` (logo, colors, fonts, `brand.json`) |
+**Add Zoo-specific pages or widgets:** PR upstream to `luxfi/exchange` to
+add your route/widget behind a feature flag. Toggle the flag via
+`/config.json` ConfigMap for `zoo.exchange` only.
 
-Only zoo-specific code lives here — right now that's
-[`pkgs/provider`](pkgs/provider) (`@l.x/provider` regulated-swap gate).
+**Different chain / tokens:** `/config.json` defaults (K8s ConfigMap at
+deploy time). `defaultChainId` + `supportedChainIds` + RPC hosts.
 
-## Chain
+**Different brand:** `@zooai/brand` is a standalone npm package —
+colors, logos, fonts, `brand.json`. Publishing a new version + tagging
+the Dockerfile rebuilds with the new brand.
 
-Zoo Network (chain ID `200200`) — set via the `defaultChainId` field in
-`/config.json` (K8s ConfigMap), loaded at runtime by `@l.x/config`.
+## Mobile
 
-## Directory
+```bash
+pnpm install
+pnpm mobile ios      # iOS simulator
+pnpm mobile android  # Android emulator
+pnpm mobile start    # Metro bundler
+```
 
-| folder | contents |
-| --- | --- |
-| `apps/` | standalone apps (web, mobile) |
-| `pkgs/` | zoo-specific packages (currently only `provider`) |
-| `deploy/` | K8s manifest + ConfigMap for prod `zoo.exchange` |
+Mobile consumes `@l.x/api`, `@l.x/lx`, `@l.x/ui`, `@l.x/utils`,
+`@luxfi/wallet`, `@zooai/brand` directly from npm.
 
-## Contributing
+## Deploy
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+Web: CI builds `ghcr.io/zooai/exchange:v*` and pushes to GHCR. Universe
+dispatch updates the K8s ConfigMap + rolls the deployment.
+
+Mobile: EAS build → TestFlight / Play Store via `pnpm mobile build`.
 
 ## Contact
 

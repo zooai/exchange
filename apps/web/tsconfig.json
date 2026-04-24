@@ -1,52 +1,9 @@
 {
+  "extends": "@l.x/tsconfig/nextjs.json",
   "compilerOptions": {
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "alwaysStrict": true,
-    "composite": true,
-    "declarationMap": false,
-    "downlevelIteration": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
     "jsx": "react-jsx",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "module": "esnext",
-    "moduleResolution": "node",
-    "noEmit": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": false,
-    "resolveJsonModule": true,
-    "noErrorTruncation": true,
-    "skipLibCheck": true,
-    "sourceMap": true,
-    "strict": true,
-    "strictNullChecks": true,
-    "target": "ESNext",
-    "types": ["chrome", "vitest/globals"],
-    "useUnknownInCatchVariables": false,
-    "paths": {
-      "@/*": ["./*"],
-      "~/*": ["./src/*"]
-    }
+    "moduleResolution": "bundler",
+    "types": ["vite/client"]
   },
-  "include": [
-    "app/**/*",
-    "components/**/*",
-    "config/**/*",
-    "lib/**/*",
-    "src/**/*",
-    "src/**/*.json",
-    ".storybook/preview.tsx",
-    ".storybook/main.ts",
-    "vite.config.mts",
-    "scripts/*",
-    "vite/*",
-    "next-env.d.ts"
-  ],
-  "exclude": ["scripts/build-vercel.ts"],
-  "references": []
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"]
 }

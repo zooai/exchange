@@ -1,39 +1,23 @@
-# Lux Exchange - White-Label DEX
-# Target: <2min builds with layer caching
+# Zoo Exchange — thin SPA shim.
+#
+# 15-line TS composing @luxfi/exchange + @zooai/brand. All heavy lifting
+# (Tamagui bones via @hanzo/gui / @hanzogui/*, wagmi, router, providers,
+# swap/pool/portfolio pages) lives upstream in @luxfi/exchange.
+#
+# Customize by adding local route/widget registrations before mount —
+# see apps/web/src/main.tsx.
 
-# Stage 1: Dependencies (cached unless package.json/lockfile changes)
-FROM node:22-alpine AS deps
-RUN apk add --no-cache libc6-compat python3 make g++ git
+# 1) Build the Vite shim (tiny bundle — most code comes from npm packages).
+FROM node:22-alpine AS build
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
-
-# Copy ONLY dependency manifests first — maximizes cache hits
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/web/package.json apps/web/
-COPY apps/mobile/package.json apps/mobile/
-COPY pkgs/provider/package.json pkgs/provider/
+RUN pnpm install --filter @zooai/exchange-web --frozen-lockfile --ignore-scripts
+COPY apps/web apps/web
+RUN cd apps/web && NODE_OPTIONS="--max-old-space-size=4096" pnpm exec vite build
 
-# Install deps — this layer is cached unless manifests change
-RUN NODE_ENV=development pnpm install --no-frozen-lockfile --ignore-scripts
-
-# Stage 2: Build (cached unless source changes)
-FROM deps AS builder
-WORKDIR /app
-
-# Copy source code (separate from deps for caching)
-COPY . .
-
-# Rebuild native modules and run postinstall scripts now that source is available
-RUN pnpm rebuild || true
-
-# App-level codegen (package-level codegen lives in the published @l.x/* / @luxfi/* packages)
-RUN cd apps/web && pnpm exec node scripts/compile-ajv-validators.js || true
-
-# Build — brand-neutral
-ENV NEXT_TELEMETRY_DISABLED=1 NODE_ENV=production DOCKER_BUILD=true
-RUN cd apps/web && DISABLE_EXTRACTION=1 NODE_OPTIONS="--max-old-space-size=8192" pnpm exec vite build
-
-# Stage 3: Runtime — hanzoai/spa serves the Vite SPA, templates /config.json from
-# SPA_* pod env at startup, and reverse-proxies PROXY_<PREFIX>=<upstream> routes.
+# 2) Serve via hanzoai/spa (runtime config templating + reverse-proxy).
 FROM ghcr.io/hanzoai/spa:1.2.0
-COPY --from=builder /app/apps/web/build /public
+COPY --from=build /app/apps/web/build /public
