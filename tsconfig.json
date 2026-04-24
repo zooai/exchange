@@ -6,8 +6,6 @@
   "references": [
     { "path": "./pkgs/provider" },
     { "path": "./apps/web" },
-    { "path": "./apps/mobile" },
-    { "path": "./config/vitest-presets" },
-    { "path": "./tools/lux-nx" }
+    { "path": "./apps/mobile" }
   ]
 }

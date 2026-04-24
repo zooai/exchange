@@ -1,76 +1,66 @@
-# Lux Exchange - Decentralized Exchange Interfaces
+# Zoo Exchange
 
-This is the repository for Lux Exchange front-end interfaces, including the Web App, Wallet Mobile App, and Wallet Extension. Lux Exchange is a protocol for decentralized exchange built on the Lux Network.
+[zoo.exchange](https://zoo.exchange) — the decentralized exchange for the
+Zoo ecosystem. Native trading on Zoo Network (chain ID 200200).
 
-## Interfaces
+## Apps
 
-- Web: [lux.exchange](https://lux.exchange)
-- Wallet (mobile + extension): Coming soon
+- `apps/web` — Vite SPA at [zoo.exchange](https://zoo.exchange)
+- `apps/mobile` — iOS + Android (Expo)
 
-## Install & Apps
+The browser-extension wallet lives upstream at
+[luxfi/wallet](https://github.com/luxfi/wallet). `@luxfi/wallet` on npm
+is the shared library; no extension is maintained here.
+
+## Install & run
 
 ```bash
-git clone git@github.com:luxfi/exchange.git
-bun install
-bun lfg
-bun web start
+git clone git@github.com:zooai/exchange.git
+cd exchange
+pnpm install
+pnpm web dev
 ```
 
-For instructions per application or package, see the README published for each application:
+Per-app instructions: [`apps/web/README.md`](apps/web/README.md),
+[`apps/mobile/README.md`](apps/mobile/README.md).
 
-- [Web](apps/web/README.md)
-- [Mobile](apps/mobile/README.md)
-- [Extension](apps/extension/README.md)
+## Packages
+
+Everything shared comes from npm — one canonical home at
+[luxfi/exchange](https://github.com/luxfi/exchange):
+
+| scope | examples |
+| --- | --- |
+| `@l.x/*` | `@l.x/lx`, `@l.x/ui`, `@l.x/utils`, `@l.x/api`, `@l.x/config`, `@l.x/gating`, `@l.x/prices`, `@l.x/sessions`, `@l.x/notifications`, `@l.x/websocket`, `@l.x/jest-preset`, `@l.x/tsconfig`, `@l.x/vitest-preset` |
+| `@luxfi/*` | `@luxfi/exchange`, `@luxfi/dex`, `@luxfi/wallet`, `@luxfi/biome-config`, `@luxfi/eslint-config` |
+| `@zooai/*` | `@zooai/brand` (logo, colors, fonts, `brand.json`) |
+
+Only zoo-specific code lives here — right now that's
+[`pkgs/provider`](pkgs/provider) (`@l.x/provider` regulated-swap gate).
+
+## Chain
+
+Zoo Network (chain ID `200200`) — set via the `defaultChainId` field in
+`/config.json` (K8s ConfigMap), loaded at runtime by `@l.x/config`.
+
+## Directory
+
+| folder | contents |
+| --- | --- |
+| `apps/` | standalone apps (web, mobile) |
+| `pkgs/` | zoo-specific packages (currently only `provider`) |
+| `deploy/` | K8s manifest + ConfigMap for prod `zoo.exchange` |
 
 ## Contributing
 
-For instructions on the best way to contribute, please review our [Contributing guide](CONTRIBUTING.md)!
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Socials / Contact
+## Contact
 
-- X (Formerly Twitter): [@luxdefi](https://x.com/luxdefi)
-- Discord: [Lux Network](https://discord.gg/luxnetwork)
-- Email: [contact@lux.network](mailto:contact@lux.network)
-
-## Lux Links
-
-- Website: [lux.network](https://lux.network/)
-- Exchange: [lux.exchange](https://lux.exchange/)
-- Docs: [docs.lux.network](https://docs.lux.network/)
-
-## Key Features
-
-### DEX Precompiles (Native AMM)
-
-Lux Exchange leverages native DEX precompiles for ultra-fast trading:
-
-- **PoolManager** (`0x0400`): Singleton pool management with flash accounting
-- **SwapRouter** (`0x0401`): Optimized swap routing
-- **HooksRegistry** (`0x0402`): Custom hook contract registry
-- **FlashLoan** (`0x0403`): Flash loan facility
-
-### CLOB Integration
-
-Integration with Lux DEX CLOB (Central Limit Order Book) for:
-- Limit orders
-- Market orders
-- High-frequency trading (1M+ orders/sec)
-
-### Omnichain Routing
-
-Best execution routing between:
-- Native AMM precompiles
-- CLOB order book
-- Cross-chain swaps via Warp/Teleport
-
-## Directory Structure
-
-| Folder      | Contents                                                                       |
-| ----------- | ------------------------------------------------------------------------------ |
-| `apps/`     | The home for each standalone application.                                      |
-| `config/`   | Shared infrastructure packages and configurations.                             |
-| `pkgs/`     | Shared code packages covering UI, shared functionality, and shared utilities.  |
+- X: [@zoocoin](https://x.com/zoocoin)
+- Discord: [discord.gg/zoo](https://discord.gg/zoo)
+- Email: [hi@zoo.ngo](mailto:hi@zoo.ngo)
 
 ## License
 
-This project is licensed under the GPL-3.0-or-later License - see the [LICENSE](LICENSE) file for details.
+GPL-3.0-or-later — see [LICENSE](LICENSE).

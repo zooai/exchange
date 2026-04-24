@@ -1,4 +1,4 @@
-const preset = require('../../config/jest-presets/jest/jest-preset')
+const preset = require('@l.x/jest-preset/jest/jest-preset.js')
 
 module.exports = {
   ...preset,
@@ -31,7 +31,7 @@ module.exports = {
     'node',
   ],
   setupFiles: [
-    '../../config/jest-presets/jest/setup.js',
+    require.resolve('@l.x/jest-preset/jest/setup.js'),
     './jest-setup.js',
   ],
 }

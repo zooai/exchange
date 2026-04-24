@@ -8,6 +8,10 @@
     "@commitlint/config-conventional": "17.4.4",
     "@crowdin/cli": "3.14.0",
     "@ethersproject/keccak256": "5.7.0",
+    "@hanzogui/component-helpers": "3.0.2",
+    "@l.x/jest-preset": "^1.0.0",
+    "@l.x/tsconfig": "^1.0.0",
+    "@l.x/vitest-preset": "^1.0.0",
     "@manypkg/cli": "0.19.2",
     "@nx/devkit": "22.5.4",
     "@nx/jest": "22.5.4",
@@ -18,12 +22,14 @@
     "@swc-node/register": "1.9.1",
     "@swc/core": "1.5.7",
     "@swc/helpers": "0.5.11",
+    "@tailwindcss/postcss": "^4.1.18",
     "@types/bun": "1.3.1",
     "@types/inquirer": "9.0.8",
     "@types/node": "22.13.1",
     "@typescript-eslint/eslint-plugin": "6.20.0",
     "@typescript-eslint/parser": "6.20.0",
     "@typescript/native-preview": "7.0.0-dev.20260311.1",
+    "autoprefixer": "^10.4.23",
     "clipboardy": "4.0.0",
     "danger": "11.2.6",
     "depcheck": "1.4.7",
@@ -38,13 +44,10 @@
     "nx": "22.5.4",
     "playwright-slack-report": "1.1.109",
     "syncpack": "8.5.14",
+    "tailwindcss": "4.1.18",
     "tslib": "2.3.0",
     "typescript": "5.8.3",
-    "wrangler": "4.65.0",
-    "@tailwindcss/postcss": "^4.1.18",
-    "tailwindcss": "4.1.18",
-    "autoprefixer": "^10.4.23",
-    "@hanzogui/component-helpers": "3.0.2"
+    "wrangler": "4.65.0"
   },
   "engines": {
     "node": ">=22",
@@ -164,8 +167,7 @@
   },
   "workspaces": [
     "apps/*",
-    "pkgs/*",
-    "config/*"
+    "pkgs/*"
   ],
   "pnpm": {
     "overrides": {

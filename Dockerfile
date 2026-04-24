@@ -12,9 +12,6 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY apps/web/package.json apps/web/
 COPY apps/mobile/package.json apps/mobile/
 COPY pkgs/provider/package.json pkgs/provider/
-COPY config/vitest-presets/package.json config/vitest-presets/
-COPY config/jest-presets/package.json config/jest-presets/
-COPY config/tsconfig/package.json config/tsconfig/
 
 # Install deps — this layer is cached unless manifests change
 RUN NODE_ENV=development pnpm install --no-frozen-lockfile --ignore-scripts

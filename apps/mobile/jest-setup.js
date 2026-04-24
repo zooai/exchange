@@ -5,7 +5,7 @@ import { setUpTests } from 'react-native-reanimated';
 import 'core-js' // necessary so setImmediate works in tests
 // Only @l.x/lx ships jest-package-mocks on npm.
 import '@l.x/lx/jest-package-mocks'
-import '../../config/jest-presets/ui/ui-package-mocks'
+import '@l.x/jest-ui-mocks'
 
 import '@l.x/lx/src/i18n' // Uses real translations for tests
 
