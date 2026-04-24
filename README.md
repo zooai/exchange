@@ -15,7 +15,7 @@ brand + logo + translations, then passes everything as React props:
   chains={[zooMainnet, …]}       // @luxfi/exchange — canonical chains
   defaultChain={zooMainnet}
   dex={{ kind: 'precompile' }}   // native Lux DEX precompiles
-  provider={{ …Liquidity/Alpaca gate… }}
+  provider={{ …Liquidity gate… }}
   auth={{ provider: 'iam', issuer: 'https://iam.zoo.network', … }}
   kms={{ url: 'https://kms.zoo.network' }}
   i18n={{ 'en-US': en, 'es-ES': es, 'zh-CN': zh }}
@@ -40,7 +40,7 @@ Each concern lives in exactly one place:
 | **chains** | `@luxfi/exchange` | `zooMainnet`, `zooTestnet`, `luxMainnet`, `luxTestnet`, etc. |
 | **Exchange App + SDK** | `@luxfi/exchange` | providers, router, wagmi, swap/pool/portfolio/limit, `@hanzo/gui` bones |
 | **DEX backend config** | `main.tsx` `dex` prop | precompile / v3 / gateway / custom adapter |
-| **regulated provider** | `main.tsx` `provider` prop | Alpaca / Liquidity SecurityToken gate |
+| **regulated provider** | `main.tsx` `provider` prop | Liquidity SecurityToken gate |
 | **auth (IAM)** | `main.tsx` `auth` prop | OIDC issuer + clientId + idHost |
 | **KMS** | `main.tsx` `kms` prop | secrets URL (native ZAP client in hanzoai/spa) |
 | **features** | `main.tsx` `features` prop | surface toggles |

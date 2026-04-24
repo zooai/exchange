@@ -25,7 +25,7 @@ createRoot(document.getElementById('root')!).render(
     chains={canonicalChains}      // lux + hanzo + zoo + liquid (all 3 envs)
     defaultChain={zooMainnet}
     dex={{ kind: 'precompile' }}
-    provider={{ /* Liquidity / Alpaca gate */ }}
+    provider={{ /* Liquidity gate */ }}
     auth={{   provider: 'iam', issuer: 'https://iam.zoo.network', … }}
     kms={{    url:      'https://kms.zoo.network' }}
     i18n={{   'en-US': en, 'es-ES': es, 'zh-CN': zh }}
@@ -68,7 +68,7 @@ No `src/`, `pkgs/`, `contracts/`, `subgraphs/`, `deploy/`, `config/`, or `tools/
 | canonical chain defs (lux/hanzo/zoo/liquid × 3 envs) | `@luxfi/exchange` | `chains={canonicalChains}` |
 | Exchange App + SDK + providers + router + wagmi + `@hanzo/gui` bones | `@luxfi/exchange` | default import |
 | DEX backend | `main.tsx` `dex` prop | `{ kind: 'precompile' \| 'v3' \| 'gateway' \| custom }` |
-| regulated provider (Liquidity / Alpaca) | `main.tsx` `provider` prop | `{ adapter, router, onboardingUrl }` |
+| regulated provider (Liquidity) | `main.tsx` `provider` prop | `{ adapter, router, onboardingUrl }` |
 | IAM login (iam.zoo.network / zoolabs.id) | `main.tsx` `auth` prop | `{ provider: 'iam', issuer, clientId, idHost }` |
 | KMS (kms.zoo.network) | `main.tsx` `kms` prop | `{ url }` |
 | feature toggles | `main.tsx` `features` prop | `{ swap, pool, nft, … }` |
@@ -104,7 +104,7 @@ Deployer: `0x9011E888251AB053B7bD1cdB598Db4f9DEd94714`.
 
 28-token composition for BlackRock-grade digital-securities demo:
 
-- **50% stocks**: AAPL, MSFT, NVDA, TSLA, GOOGL, AMZN, META (Alpaca-gated)
+- **50% stocks**: AAPL, MSFT, NVDA, TSLA, GOOGL, AMZN, META (Liquidity-gated)
 - **25% private**: OPENAI, ANTHROPIC, SPACEX, STRIPE (regulated provider gated)
 - **25% native Zoo**: ZOO (native), WLUX, LETH, LBTC, LUSD (deployed addresses above)
 

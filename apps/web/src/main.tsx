@@ -30,7 +30,7 @@ createRoot(document.getElementById('root')!).render(
     // for chains without precompiles.
     dex={{ kind: 'precompile' }}
 
-    // ─── Regulated-asset gate (Liquidity/Alpaca) ────────────────────
+    // ─── Regulated-asset gate (Liquidity) ────────────────────
     // Public stocks (AAPL) + private securities (OpenAI, Anthropic, etc.)
     // gate through the Liquidity provider — KYC/accreditation enforced.
     provider={{
@@ -70,7 +70,7 @@ createRoot(document.getElementById('root')!).render(
     }}
 
     // ─── Featured tokens on the landing page ────────────────────────
-    // 50% public stocks (Alpaca-gated) / 25% private securities /
+    // 50% public stocks (Liquidity-gated) / 25% private securities /
     // 25% native Zoo-chain assets. Full 28-token list in
     // featured-tokens.ts (used by Docker overlay path).
     featured={[

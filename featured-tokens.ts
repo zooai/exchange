@@ -5,7 +5,7 @@
 //
 // Composition (50 / 25 / 25) across 28 tokens:
 //   14 native Zoo-chain assets (≥50%) — ZOO and bridged assets on chain 200200
-//    7 public stocks (~25%) — AAPL + 6 more via Alpaca-gated SecurityTokens
+//    7 public stocks (~25%) — AAPL + 6 more via Liquidity-gated SecurityTokens
 //    7 private securities (~25%) — OpenAI/SpaceX/Anthropic/etc. (display-only
 //                                   until deployed on Zoo EVM)
 //
@@ -149,7 +149,7 @@ const NATIVE: InteractiveToken[] = [
   },
 ]
 
-// ─── 7 public stocks (~25%) — Alpaca-gated SecurityTokens ─────────────
+// ─── 7 public stocks (~25%) — Liquidity-gated SecurityTokens ─────────────
 const STOCKS: InteractiveToken[] = [
   {
     name: 'Apple Inc',
