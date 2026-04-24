@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@luxfi/exchange": "^2.0.0",
+    "@luxfi/exchange": "^1.0.8",
     "@zooai/brand": "^1.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
