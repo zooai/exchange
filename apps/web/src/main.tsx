@@ -26,7 +26,7 @@ createRoot(document.getElementById('root')!).render(
 
     // ─── DEX backend ─────────────────────────────────────────────────
     // Native Lux DEX precompiles on Zoo chain — sub-microsecond matching.
-    // Falls back to V2 AMM (zoo mainnet factory+router deployed 2026-03-04)
+    // Falls back to V2 AMM (zoo mainnet factory+router deployed 2024)
     // for chains without precompiles.
     dex={{ kind: 'precompile' }}
 
@@ -87,7 +87,7 @@ createRoot(document.getElementById('root')!).render(
       { chainId: 8675309, address: '0x0000000000000000000000000000000000000000', symbol: 'ANTHROPIC',  name: 'Anthropic',  color: '#D97757', regulated: true },
       { chainId: 8675309, address: '0x0000000000000000000000000000000000000000', symbol: 'SPACEX',     name: 'SpaceX',     color: '#000000', regulated: true },
       { chainId: 8675309, address: '0x0000000000000000000000000000000000000000', symbol: 'STRIPE',     name: 'Stripe',     color: '#635BFF', regulated: true },
-      // Native Zoo (25%) — Zoo mainnet (200200), addresses from 2026-03-04 deploy
+      // Native Zoo (25%) — Zoo mainnet (200200), addresses from 2024 deploy
       { chainId: 200200, address: 'native',                                      symbol: 'ZOO',  name: 'Zoo',   color: '#000000' },
       { chainId: 200200, address: '0x5491216406daB99b7032b83765F36790E27F8A61', symbol: 'WLUX', name: 'Wrapped Lux', color: '#FFFFFF' },
       { chainId: 200200, address: '0x4870621EA8be7a383eFCfdA225249d35888bD9f2', symbol: 'LETH', name: 'Lux ETH',     color: '#627EEA' },

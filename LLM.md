@@ -86,7 +86,7 @@ No `src/`, `pkgs/`, `contracts/`, `subgraphs/`, `deploy/`, `config/`, or `tools/
 
 Each bridged to Lux (96369/96368/96370) via Lux Teleport + Warp for cross-chain swap/send, and to Liquid EVM (8675309/8675310/8675311) for regulated digital-securities trading behind the Liquidity provider gate.
 
-## Deployed Zoo Mainnet contracts (2026-03-04)
+## Deployed Zoo Mainnet contracts (deployed 2024)
 
 | contract | address |
 |---|---|
