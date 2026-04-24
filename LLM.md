@@ -1,1042 +1,156 @@
-# AI Assistant Knowledge Base
+# Zoo Exchange — AI Assistant Knowledge Base
 
-**Last Updated**: 2026-03-24
-**Project**: Lux Exchange Monorepo
-**Organization**: luxfi
+**Last Updated**: 2026-04-23
+**Repo**: `github.com/zooai/exchange` (branch: `main`)
+**Live**: [zoo.exchange](https://zoo.exchange)
+**Canonical upstream**: [luxfi/exchange](https://github.com/luxfi/exchange)
 
-## Project Overview
+## What this repo is
 
-Lux Exchange is a full-featured, cross-chain DEX for the Lux Network ecosystem. It combines:
-- **Standard AMM Contracts** (`~/work/lux/standard`) - V2/V3 pools deployed on Lux chains
-- **DEX Precompiles** (LP-9010 to LP-9040) - Native Lux v4-style pools for sub-microsecond execution
-- **Omni-chain Routing** - Cross-chain swaps via Warp/Teleport
-- **Modern Frontend** - Tamagui + Zustand (Lux interface patterns)
+A **thin white-label shim** over [`@luxfi/exchange`](https://www.npmjs.com/package/@luxfi/exchange) — the canonical Lux-ecosystem DEX SDK. The entire Zoo Exchange SPA is composed via a single React component with props.
 
-## Technology Stack
+```tsx
+// apps/web/src/main.tsx
+import { createRoot } from 'react-dom/client'
+import Exchange, { canonicalChains, zooMainnet } from '@luxfi/exchange'
+import brand from '@zooai/brand'
+import Logo  from '@zooai/logo'
+import en from '@zooai/brand/translations/en-US.json'
+// …
 
-- **Framework**: Next.js 15.5 (App Router) with Nx monorepo
-- **React**: 19.x
-- **Web3**: wagmi v3, viem
-- **UI**: Tamagui (cross-platform) + Tailwind CSS (web)
-- **State**: Zustand stores
-- **Data**: React Query
-- **Testing**: Playwright (e2e), Vitest (unit)
-- **Package Manager**: pnpm workspaces
+createRoot(document.getElementById('root')!).render(
+  <Exchange
+    {...brand}
+    logo={Logo}
+    chains={canonicalChains}      // lux + hanzo + zoo + liquid (all 3 envs)
+    defaultChain={zooMainnet}
+    dex={{ kind: 'precompile' }}
+    provider={{ /* Liquidity / Alpaca gate */ }}
+    auth={{   provider: 'iam', issuer: 'https://iam.zoo.network', … }}
+    kms={{    url:      'https://kms.zoo.network' }}
+    i18n={{   'en-US': en, 'es-ES': es, 'zh-CN': zh }}
+    features={{ nft: true, … }}
+    featured={[ /* 50% stocks (AAPL…) / 25% private (OpenAI…) / 25% native Zoo */ ]}
+  />,
+)
+```
 
-## Monorepo Structure
+## Repo shape (Marie-Kondo cleanup 2026-04-23)
 
 ```
-/Users/z/work/lux/exchange/
+zooai/exchange/
+├── Dockerfile                    # build from pinned luxfi/exchange + Zoo overlays
+├── .env                          # Vite build-time defaults
+├── csp.json                      # Zoo-scoped CSP (*.zoo.exchange, *.zoo.network, …)
+├── featured-tokens.ts            # landing-page token cloud (Docker overlay path)
 ├── apps/
-│   └── web/                    # Next.js 15 web app
-│       ├── app/                # App Router pages
-│       ├── components/         # React components
-│       ├── lib/                # Utilities
-│       ├── e2e/                # Playwright tests
-│       └── public/             # Static assets
-│
-├── pkgs/
-│   ├── config/                 # Shared configuration
-│   │   └── src/
-│   │       ├── chains.ts       # Chain definitions (Lux, Zoo)
-│   │       ├── contracts.ts    # Contract addresses (V2, V3, Precompiles)
-│   │       ├── wagmi.ts        # Wagmi config
-│   │       └── env.ts          # Environment config
-│   │
-│   ├── exchange/               # Core DEX logic
-│   │   └── src/
-│   │       ├── chains/         # Chain re-exports
-│   │       ├── tokens/         # Token definitions
-│   │       ├── contracts/      # ABIs (V2, V3, precompiles)
-│   │       ├── dex/            # DEX types (PoolKey, BalanceDelta)
-│   │       ├── hooks/          # React hooks (useSwap, usePools, etc.)
-│   │       └── stores/         # Zustand stores
-│   │
-│   ├── ui/                     # Tamagui UI components
-│   │   └── src/
-│   │       ├── theme/          # Design tokens, themes
-│   │       └── components/     # Button, Card, TokenLogo, etc.
-│   │
-│   └── api/                    # Data fetching
-│       └── src/
-│           ├── client.ts       # React Query client
-│           └── hooks/          # useTokenList, useTokenPrice
-│
-├── package.json                # Workspace root
-├── pnpm-workspace.yaml         # pnpm workspaces config
-└── nx.json                     # Nx build orchestration
+│   ├── web/                      # thin TS shim — main.tsx, index.html, vite.config
+│   └── mobile/                   # Expo iOS + Android
+├── package.json                  # 4 devDeps, 1 script (mobile delegate)
+├── pnpm-workspace.yaml           # apps/*
+├── README.md
+├── LLM.md (this file)
+├── CLAUDE.md → LLM.md (symlink)
+├── AGENTS.md → LLM.md (symlink)
+├── LICENSE
+└── VERSION
 ```
 
-## Essential Commands
+No `src/`, `pkgs/`, `contracts/`, `subgraphs/`, `deploy/`, `config/`, or `tools/`. The SPA bundle builds from upstream pinned commit at Docker build time.
 
-```bash
-# Development
-pnpm dev                    # Start web app dev server
-pnpm build                  # Build all packages
+## Separation of concerns — every field has exactly one home
 
-# Testing
-pnpm test                   # Run all tests
-pnpm test:e2e               # Playwright e2e tests
+| concern | home | how |
+|---|---|---|
+| visual identity (colors, fonts, emails, socials, legal, domains) | `@zooai/brand@1.3.0` (pure) | spread `{...brand}` |
+| logo marks (mono / color / wordmark / favicon) | `@zooai/logo@1.0.0` | `<Exchange logo={Logo} />` |
+| per-locale translations | `@zooai/brand/translations/*.json` | `i18n={{ 'en-US': en, … }}` |
+| canonical chain defs (lux/hanzo/zoo/liquid × 3 envs) | `@luxfi/exchange` | `chains={canonicalChains}` |
+| Exchange App + SDK + providers + router + wagmi + `@hanzo/gui` bones | `@luxfi/exchange` | default import |
+| DEX backend | `main.tsx` `dex` prop | `{ kind: 'precompile' \| 'v3' \| 'gateway' \| custom }` |
+| regulated provider (Liquidity / Alpaca) | `main.tsx` `provider` prop | `{ adapter, router, onboardingUrl }` |
+| IAM login (iam.zoo.network / zoolabs.id) | `main.tsx` `auth` prop | `{ provider: 'iam', issuer, clientId, idHost }` |
+| KMS (kms.zoo.network) | `main.tsx` `kms` prop | `{ url }` |
+| feature toggles | `main.tsx` `features` prop | `{ swap, pool, nft, … }` |
+| featured tokens | `main.tsx` `featured` prop OR `featured-tokens.ts` | array of `TokenRef` |
+| custom routes | `main.tsx` `routes` prop | `[{ path, component }]` |
+| custom widgets | `main.tsx` `widgets` prop | `[{ slot, component }]` |
 
-# Package-specific
-pnpm nx run @luxfi/config:typecheck
-pnpm nx run @luxfi/exchange:typecheck
-pnpm nx run @luxfi/web:dev
-```
+## Three networks (all enabled)
 
-## Supported Chains
-
-### Primary Chains
-| Chain | Chain ID | RPC |
-|-------|----------|-----|
-| Lux Mainnet | 96369 | `https://api.lux.network/mainnet/ext/bc/C/rpc` |
-| Lux Testnet | 96368 | `https://api.lux.network/testnet/ext/bc/C/rpc` |
+| env | chain id | RPC |
+|---|---|---|
 | Zoo Mainnet | 200200 | `https://api.zoo.network/rpc` |
 | Zoo Testnet | 200201 | `https://api.zoo-test.network/rpc` |
+| Zoo Devnet | 200202 | `https://api.zoo-dev.network/rpc` |
 
-**CRITICAL**: Do NOT use `https://api.lux.network/rpc` -- it returns 404. Use full path with network prefix.
+Each bridged to Lux (96369/96368/96370) via Lux Teleport + Warp for cross-chain swap/send, and to Liquid EVM (8675309/8675310/8675311) for regulated digital-securities trading behind the Liquidity provider gate.
 
-### Subnet Chains (source of truth: NETWORKS.yaml)
-| Chain | Coin | Chain ID (Mainnet) | Chain ID (Testnet) |
-|-------|------|-------------------|-------------------|
-| Hanzo | AI | 36963 | 36964 |
-| SPC | SPC | 36911 | 36910 |
-| Pars | PARS | 494949 | 7071 |
+## Deployed Zoo Mainnet contracts (2026-03-04)
 
-Note: Hanzo coin is **AI**, not HANZO. These chains are in the chain selector (Vite SPA) and wagmi transports.
+| contract | address |
+|---|---|
+| WLUX | `0x5491216406daB99b7032b83765F36790E27F8A61` |
+| MULTICALL | `0xd25F88CBdAe3c2CCA3Bb75FC4E723b44C0Ea362F` |
+| LETH (bridged) | `0x4870621EA8be7a383eFCfdA225249d35888bD9f2` |
+| LBTC (bridged) | `0x6fc44509a32E513bE1aa00d27bb298e63830C6A8` |
+| LUSD (bridged) | `0xb2ee1CE7b84853b83AA08702aD0aD4D79711882D` |
+| V2_FACTORY | `0xF034942c1140125b5c278aE9cEE1B488e915B2FE` |
+| V2_ROUTER | `0x2cd306913e6546C59249b48d7c786A6D1d7ebE08` |
 
-## Contract Addresses
+Deployer: `0x9011E888251AB053B7bD1cdB598Db4f9DEd94714`.
 
-### AMM V2 (QuantumSwap) - Lux Mainnet
-| Contract | Address |
-|----------|---------|
-| V2Factory | `0xd9a95609DbB228A13568Bd9f9A285105E7596970` |
-| V2Router | `0x1F6cbC7d3bc7D803ee76D80F0eEE25767431e674` |
+## Featured tokens — 50% stocks / 25% private / 25% native Zoo
 
-### AMM V3 (Concentrated Liquidity) - Lux Mainnet
-| Contract | Address |
-|----------|---------|
-| V3Factory | `0xb732BD88F25EdD9C3456638671fB37685D4B4e3f` |
-| SwapRouter | `0xE8fb25086C8652c92f5AF90D730Bac7C63Fc9A58` |
-| QuoterV2 | `0x15C729fdd833Ba675edd466Dfc63E1B737925A4c` |
-| NonfungiblePositionManager | `0x7a4C48B9dae0b7c396569b34042fcA604150Ee28` |
+28-token composition for BlackRock-grade digital-securities demo:
 
-### DEX Precompiles (Native AMM)
+- **50% stocks**: AAPL, MSFT, NVDA, TSLA, GOOGL, AMZN, META (Alpaca-gated)
+- **25% private**: OPENAI, ANTHROPIC, SPACEX, STRIPE (regulated provider gated)
+- **25% native Zoo**: ZOO (native), WLUX, LETH, LBTC, LUSD (deployed addresses above)
 
-**Lux Precompile Address Standard:**
-- **Prefix format**: `0xNNNN000000000000000000000000000000000000`
-- LP-Aligned format: `0x0000000000000000000000000000000000LPNUM`
-- DEX precompiles use LP-9xxx range (LP-9010 to LP-9040)
-- See LP-9015 (Precompile Registry) for canonical spec
+Stocks + private route through the Liquidity regulated provider on Liquid EVM; native Zoo trades through Lux DEX precompiles (LP-9010 family).
 
-| Precompile | LP | Full Address |
-|------------|-----|--------------|
-| PoolManager | LP-9010 | `0x0000000000000000000000000000000000009010` |
-| OracleHub | LP-9011 | `0x0000000000000000000000000000000000009011` |
-| SwapRouter | LP-9012 | `0x0000000000000000000000000000000000009012` |
-| HooksRegistry | LP-9013 | `0x0000000000000000000000000000000000009013` |
-| FlashLoan | LP-9014 | `0x0000000000000000000000000000000000009014` |
-| CLOB | LP-9020 | `0x0000000000000000000000000000000000009020` |
-| Vault | LP-9030 | `0x0000000000000000000000000000000000009030` |
-| PriceFeed | LP-9040 | `0x0000000000000000000000000000000000009040` |
-| Teleport | LP-6010 | `0x0000000000000000000000000000000000006010` |
+## Bridge + Teleport
 
-**Enabling DEX Precompiles:**
+Cross-chain via [`~/work/lux/bridge`](https://github.com/luxfi/bridge):
+- **Zoo ↔ Lux**: native Warp messaging (sub-second finality)
+- **Zoo ↔ Liquid EVM**: Warp + compliance attestations (regulated assets require KYC proof passthrough)
+- **Zoo ↔ external EVMs**: via `dex.lux.network` gateway (Circle CCTP, LayerZero, etc.)
 
-Add to `~/.lux/chain-configs/C/config.json`:
-```json
-{
-  "dexConfig": {
-    "upgrade": { "blockTimestamp": 0 },
-    "enableFlashLoans": true,
-    "enableHooks": true,
-    "maxPools": 10000
-  }
-}
-```
+Contract deployments for Zoo side of the bridge are in `~/work/zoo/contracts` (`broadcast/DeployZooBridge.s.sol/200200/`).
 
-## Key Tokens
-
-| Symbol | Name | Type |
-|--------|------|------|
-| LUX | Lux | Native gas token |
-| WLUX | Wrapped LUX | ERC-20 wrapped native (0x55750d6...) |
-| LETH | Lux ETH | Bridged ETH (0xAA3AE95...) |
-| LBTC | Lux BTC | Bridged BTC (0x526903E...) |
-| ZOO | Zoo | Native on Zoo Network |
-
-## Package Dependencies
-
-```
-@luxfi/web
-  └── @luxfi/exchange
-      ├── @luxfi/config
-      └── @luxfi/api
-  └── @l.x/ui
-      └── @luxfi/config
-```
-
-## Recent Changes (2025-12-25)
-
-### Lux & Zoo Chain Integration
-- Added Lux C-Chain (chainId: 96369) and Zoo Network (chainId: 200200) as native chains
-- Created chain info files: `lux.ts` and `zoo.ts` in `/pkgs/lux/src/features/chains/evm/info/`
-- Chains prioritized in ORDERED_CHAINS array for primary display
-- Added LUX_LOGO, LUX_NETWORK_LOGO assets in `/pkgs/ui/src/assets/logos/`
-- Fixed `testnet: false` property in chain configurations
-
-### Branding Update (Lux → Lux)
-- Updated user-facing strings in `en-US.json` translation file
-- Changed: "Lux Wallet" → "Lux Wallet", "Lux Labs" → "Lux Industries"
-- Changed: "Lux TVL" → "Lux TVL", "Lux Exchange" → "Lux Exchange"
-- Updated social links: GitHub, Twitter, Discord to luxfi accounts
-- Updated trademark policy to lux.exchange/trademark
-- Preserved protocol names: "Lux v2", "Lux v3", "Lux v4", "LuxX" (technical references)
-
-### URL/Domain Branding (Lux → Lux)
-- Updated default chain from Ethereum Mainnet to Lux in `utils.ts:getDefaultChainId()`
-- Changed Apollo client Origin header to `https://lux.exchange`
-- Updated MICROSITE_LINK to `https://lux.exchange/wallet`
-- Updated env.ts domain checks from lux.org to lux.exchange
-- Updated setupTests.ts origin to lux.exchange
-
-**Support/Help URLs Updated:**
-- AddLiquidity/index.tsx → `https://docs.lux.exchange/help/liquidity-full-range-v3`
-- Pool/v2.tsx → `https://docs.lux.exchange/protocol/v2/core-concepts/pools`
-- Pool/v2.tsx info link → `https://info.lux.exchange/v2/account/`
-- Pool/CTACards.tsx → `https://docs.lux.exchange/help/providing-liquidity`
-- SwapLineItem.tsx → `https://docs.lux.exchange/help/token-fees`, `swap-fees`
-- GasBreakdownTooltip.tsx → `https://docs.lux.exchange/help/network-fees`
-- LimitDisclaimer.tsx → `https://docs.lux.exchange/help/limit-orders`
-- RouterPreferenceSettings → `https://docs.lux.exchange/help/luxx`
-- OutageBanner.tsx → `https://docs.lux.exchange/help/subgraph-downtime`
-- ConnectedAccountBlocked.tsx → `https://docs.lux.exchange/help/blocked-addresses`
-- IncreaseLiquidityReview.tsx → `https://docs.lux.exchange/help/add-liquidity-existing-position`
-- Wrapped/index.tsx → `https://wrapped.lux.exchange`
-- PrivacyPolicy.tsx → `https://lux.exchange/terms`, `https://lux.exchange/privacy`
-- WalletConnect metadata → `https://lux.exchange`, `Lux Exchange`
-
-**Compliance email updated:**
-- `compliance@lux.org` → `compliance@lux.exchange` (en-US.json + all 14 translation files)
-
-**Additional Package Updates (pkgs/lux):**
-- dynamicConfigOverrides.tsx → `lux.exchange` embedded wallet URL
-- mainnet.ts → `https://docs.lux.exchange/` for Ethereum Mainnet and Sepolia docs
-- conversionTracking/constants.ts → `.lux.exchange` cookie domain
-- conversionTracking/utils.ts → Updated subdomain comment
-
-**Remaining Backend API URLs (NOT changed - connect to real infrastructure):**
-- `api.lux.org` - Core API endpoint
-- `liquidity.backend-prod.api.lux.org` - Liquidity service
-- `entry-gateway.backend-*.api.lux.org` - Conversion tracking APIs
-These require Lux backend infrastructure to replace.
-
-### @luxfi/config Exports Fixed
-- Added chain exports: luxMainnet, luxTestnet, zooMainnet, zooTestnet
-- Added contract exports: LUX_MAINNET_CONTRACTS, DEX_PRECOMPILES
-- Fixed missing exports causing TypeScript errors
-
-### React 19 Compatibility Fix
-- Fixed "Cannot read properties of null (reading 'getOwner')" error
-- Created `scripts/fix-reanimated-react19.sh` to patch react-native-reanimated
-- The patch wraps `getCurrentReactOwner()` in try-catch for React 19 internals
-- Added to postinstall hook in package.json
-- Disabled StrictMode temporarily for immer 9.x compatibility
-- Tests passing: 6/7 landing page tests pass (1 UK-specific test skipped)
-
-### Namespace Migration Complete
-- Renamed @universe/ → @luxfi/ across 871+ source files
-- Renamed internal @lux packages: biome-config, eslint-config, extension, mobile → @luxfi/
-- External @lux SDK packages preserved (sdk-core, router-sdk, etc.)
-- All tests passing after migration
-
-### Monorepo Migration Complete
-- Migrated to Nx monorepo with pnpm workspaces
-- Created 4 packages: config, exchange, ui, api
-- Moved web app to apps/web/
-- Added Tamagui UI components (Button, Card, TokenLogo)
-- Added comprehensive ABIs for V2, V3, and DEX precompiles
-- Added Zustand stores for swap state management
-- Added React hooks for swap, pools, positions, balances
-
-### Package Highlights
-
-**@luxfi/config**
-- Chain definitions (luxMainnet, luxTestnet, zooMainnet, zooTestnet)
-- All deployed contract addresses from ~/work/lux/standard
-- DEX precompile addresses
-- Wagmi configuration
-
-**@luxfi/exchange**
-- Token definitions with bridge tokens (LETH, LBTC)
-- Full ABIs: V2Router, V2Factory, V2Pair, V3Factory, V3Pool, SwapRouter, QuoterV2, NFTPositionManager
-- DEX types: PoolKey, BalanceDelta, SwapParams
-- Hooks: useSwapQuote, useSwap, usePools, usePositions, useTokenBalance, useTokenAllowance
-- Stores: swapStore, tokenStore, settingsStore
-
-**@l.x/ui**
-- Tamagui design tokens and themes (light/dark)
-- Components: Button, Card, IconButton, TokenLogo
-
-**@luxfi/api**
-- React Query client configuration
-- Token list and price hooks
-
-## Development Workflow
-
-1. Start dev server: `pnpm dev`
-2. Make changes to packages (they're transpiled by Next.js)
-3. Run tests: `pnpm test:e2e`
-4. Commit: `git commit -m "feat: description"`
-
-## Verification Status (2025-12-25)
-
-- **TypeScript**: All 5 packages pass typecheck ✓
-- **Build**: All packages build successfully ✓
-- **E2E Tests**: 20 passed, 19 skipped (require local node) ✓
-
-## Lux Gateway Integration (2025-12-26)
-
-### Gateway Overview
-
-The Lux Gateway (`~/work/lux/dex`) provides a unified API layer for DEX operations:
-- **Lux Provider** (priority 10): Native handler for Lux (96369) and Zoo (200200) chains
-- **Lux Provider** (priority 100): Fallback for all other chains
-
-### Gateway URLs
-
-| Environment | URL |
-|-------------|-----|
-| Development | `http://localhost:8085` |
-| Staging | `https://dex.lux-test.network` |
-| Production | `https://dex.lux.network` |
-
-### Configuration
-
-Environment variables in `.env` or `.env.local`:
-```bash
-LUX_GATEWAY_URL=http://localhost:8085  # Override default URL selection
-```
-
-### Files Modified for Gateway Integration
-
-| File | Purpose |
-|------|---------|
-| `pkgs/config/src/config-types.ts` | Added `luxGatewayUrlOverride` field |
-| `pkgs/config/src/getConfig.web.ts` | Added env var handling for web |
-| `pkgs/config/src/getConfig.native.ts` | Added env var handling for mobile |
-| `pkgs/config/src/global.d.ts` | Added `LUX_GATEWAY_URL` type declaration |
-| `pkgs/lux/src/constants/urls.ts` | Added gateway URL constants and `getLuxGatewayUrl()` |
-| `.env.defaults` | Added gateway URL documentation |
-
-### Gateway Endpoints
-
-```
-GET  /health              - Provider health status
-GET  /providers           - List registered providers
-POST /v1/quote            - Get swap quote
-POST /v1/quotes           - Get multiple quotes
-POST /v1/swap             - Build swap transaction
-GET  /v1/pools            - List pools
-GET  /v1/pool/:chainId/:address - Get specific pool
-GET  /v1/positions        - List positions
-GET  /v1/price            - Get token price
-POST /v1/prices           - Get multiple token prices
-GET  /v1/tokens           - List tokens
-POST /v1/leads            - Create conversion lead
-POST /v1/events           - Track conversion event
-```
-
-### Quote Request Format
-
-```json
-{
-  "tokenIn": "0x0000000000000000000000000000000000000000",
-  "tokenOut": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-  "amount": "1000000000000000000",
-  "isExactIn": true,
-  "chainId": 96369
-}
-```
-
-### Testing Status
-
-| Chain | Chain ID | Provider | Status |
-|-------|----------|----------|--------|
-| Lux | 96369 | lux | Mock quotes working |
-| Zoo | 200200 | lux | Mock quotes working |
-| Ethereum | 1 | lux | Requires API key |
-
-### Frontend Integration (2025-12-26)
-
-The `TradingApiClient` is now wrapped with `LuxGatewayClient` to route Lux/Zoo chain requests to the gateway:
-
-**Files Added:**
-- `pkgs/lux/src/data/apiClients/tradingApi/LuxGatewayClient.ts` - Gateway client wrapper
-
-**Key Functions:**
-- `isLuxChain(chainId)` - Checks if chain is Lux (96369) or Zoo (200200)
-- `createLuxGatewayAwareTradingClient(client)` - Wraps TradingApiClient with gateway routing
-- `fetchLuxGatewayQuote(request)` - Fetches quote from Lux Gateway
-
-**How It Works:**
-1. When `fetchQuote` or `fetchIndicativeQuote` is called
-2. If `tokenInChainId` is 96369 (Lux) or 200200 (Zoo)
-3. Request is routed to Lux Gateway (`/v1/quote`)
-4. Response is transformed to match `DiscriminatedQuoteResponse` format
-5. Falls back to TradingAPI on gateway failure
-
-**Response Transformation:**
-- Gateway returns mock quote with DEX precompile route (0x0400)
-- Transformed to ClassicQuote format for UI compatibility
-- Uses v4-pool route type for native Lux DEX pools
-
-### Starting the Gateway
+## Build & deploy
 
 ```bash
-cd ~/work/lux/dex
-go build -o lxd ./cmd/gateway
-./lxd -addr :8085  # Development port (default is :8080)
+# Build Docker image (pinned upstream commit + Zoo overlays)
+docker build -t ghcr.io/zooai/exchange:v1.x.x .
+
+# Tag triggers CI → universe dispatch → K8s rollout
+git tag web/5.x.x
+git push origin web/5.x.x
 ```
 
-## Universe Network Setup (2025-12-28)
+CI: `.github/workflows/docker-publish.yml` uses hanzo ARC runners (`hanzo-build-linux-amd64`/`arm64`). Universe dispatches on tag push to `zooai/universe` for auto-deploy.
 
-All 4 network targets are now configured in `~/work/lux/universe/`:
+Runtime image: `ghcr.io/hanzoai/spa:1.2.0` (tiny static server + `/config.json` templating + reverse-proxy). K8s ConfigMap provides `SPA_*` env vars which get templated into `/config.json` at pod startup.
 
-### Port Assignments (Parallel-Safe)
+## Known issues (2026-04-23)
 
-| Network | RPC Base | Gateway | PostgreSQL | Redis | Network ID |
-|---------|----------|---------|------------|-------|------------|
-| Mainnet | 9630-9639 | 8080 | 15432 | 16379 | 1 |
-| Testnet | 9740-9749 | 8081 | 15433 | 16380 | 2 |
-| Devnet | 9840-9849 | 8082 | 15434 | 16381 | 5 |
-| Local | 9940-9949 | 8083 | 15435 | 16382 | 1337 |
+1. **Hanzo ARC runners** — `startup_failure` on every CI run since 2026-04-22. Ops fix needed. Dockerfile is correct; blocked on runner infra.
+2. **`@luxfi/exchange` App runtime** — types + examples + `ExchangeConfig` shape all landed on `luxfi/exchange` branch `sdk-shell-api`. Runtime that consumes these props into `ExchangeContext` + wires into providers/router/i18n/wagmi still pending — move `apps/web/src/{index.tsx, App.tsx, RouteDefinitions.tsx, providers/*}` → `pkgs/exchange/src/`. Ships as `@luxfi/exchange@1.0.9` when done.
+3. **Live site stale** — serving 2026-03-09 build (pre-my-session). Every fix is committed + pushed; production rolls when CI runs green.
 
-### Compose Files
+## Rules for AI assistants
 
-```bash
-# Start individual networks
-docker compose -f compose.mainnet.yml up -d
-docker compose -f compose.testnet.yml up -d
-docker compose -f compose.devnet.yml up -d
-docker compose -f compose.local.yml up -d
+1. **NEVER commit `CLAUDE.md`** — it's a symlink to `LLM.md`. Only edit `LLM.md`.
+2. **NEVER duplicate brand / chain / logo / token data** — single canonical source per concern.
+3. **PREFER the declarative SDK pattern** — one `<Exchange {...config} />`, no imperative `register()`, no state machines, no global mutation.
+4. **KEEP zoo/exchange thin** — if code doesn't have a `zoo.`-specific reason to exist here, it belongs upstream in `luxfi/exchange`.
+5. **NO hardcoded absolute paths** — `path.resolve(__dirname, …)` only. No `/Users/z/…`.
+6. **Version policy**: `@luxfi/exchange` stays on 1.x (no 2.0 bump). `@zooai/brand` bumps minor per non-breaking content change.
 
-# Or use CLI for quick dev
-lux network start --mainnet   # Ports 9630+
-lux network start --testnet   # Ports 9640+
-lux network start --devnet    # Ports 9650+
-lux network start --local     # Single node, port 8545
-```
+## Contact
 
-### State Data
-
-RLP block exports available at `~/work/lux/state/rlp/`:
-- `lux-mainnet-96369.rlp` - 1,082,780 blocks (1.2GB)
-- `zoo-mainnet-200200.rlp` - 799 blocks
-- `lux-testnet-96368.rlp` - 219 blocks
-- `zoo-testnet-200201.rlp` - 85 blocks
-
-### LXD Gateway Endpoints
-
-```bash
-# Health check
-curl http://localhost:8080/health
-
-# Get pools (returns 5 v4 pools)
-curl 'http://localhost:8080/v1/pools?chainId=96369'
-
-# Get tokens (returns 10 tokens)
-curl 'http://localhost:8080/v1/tokens?chainId=96369'
-
-# Get swap quote
-curl 'http://localhost:8080/v1/quote?chainId=96369&tokenIn=0x0&tokenOut=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&amount=1000000000000000000'
-```
-
-## SDK Type Compatibility Status (2025-12-28)
-
-### Core Packages (All Typecheck Successfully)
-- `pkgs/exchange` ✓ - AMM/DEX hooks, tokens, contracts
-- `pkgs/lx` ✓ - Business logic, swap utilities
-- `pkgs/ui` ✓ - UI components
-- `pkgs/config` ✓ - Chain and contract configuration
-
-### Known SDK Type Mismatches
-The codebase uses `@luxamm/*` SDKs (forked from Lux). All `@lux/*` imports have been replaced with `@luxamm/*` wrappers for supply chain security. The `@luxamm/*` packages re-export from vendored `@lux/*` deps internally. Cross-boundary type mismatches may still occur.
-
-**Solution Applied**: Type assertions (`as unknown as`) in:
-- `pkgs/lx/src/features/transactions/swap/analytics.ts`
-- `pkgs/lx/src/features/transactions/swap/types/trade.ts`
-- `pkgs/lx/src/features/transactions/swap/utils/tradingApi.ts`
-- `apps/web/src/utils/getTickToPrice.ts`
-- `apps/web/src/utils/computeSurroundingTicks.ts`
-
-**Remaining Web App Errors**: ~212 type errors in UI components (TransactionRow, PoolRow, NetworkFilter, etc.) due to SDK mismatches. These don't affect runtime functionality.
-
-### Token Lists
-Added `@lux/token-lists` with manually built dist/ types (package source-only).
-
-### Legacy Pages
-Excluded `src/_pages_legacy/` from typecheck in `apps/web/tsconfig.json`.
-
-## G-Chain GraphQL Integration (2025-12-30)
-
-### Overview
-
-G-Chain is a read-only GraphQL interface that provides unified access to blockchain data across all Lux chains. It eliminates the need for external subgraph services by indexing DEX data natively.
-
-### G-Chain URLs
-
-| Environment | Port | URL |
-|-------------|------|-----|
-| Mainnet | 9630 | `http://localhost:9630/ext/bc/G/graphql` |
-| Testnet | 9650 | `http://localhost:9650/ext/bc/G/graphql` |
-| Devnet | 9650 | `http://localhost:9650/ext/bc/G/graphql` |
-
-### Files Added
-
-**Exchange Frontend (`pkgs/lx/src/data/gchain/`):**
-- `client.ts` - Apollo client, queries, types, helper functions
-- `hooks.ts` - React Query hooks for G-Chain data
-- `useLuxBalance.ts` - Lux-specific balance and account hooks
-- `index.ts` - Exports and documentation
-
-**Configuration:**
-- `pkgs/config/src/config-types.ts` - Added `gChainGraphqlUrl` field
-- `pkgs/config/src/getConfig.web.ts` - G-Chain URL config for web
-- `pkgs/config/src/getConfig.native.ts` - G-Chain URL config for mobile
-- `pkgs/lx/src/constants/urls.ts` - G-Chain URL exports
-- `pkgs/lx/src/data/links.ts` - Apollo link for G-Chain
-
-**Node DEX Resolvers (`node/vms/graphvm/`):**
-- `dex_resolvers.go` - Comprehensive v2/v3 subgraph-compatible resolvers
-- `graphql.go` - Updated to register DEX resolvers
-
-### G-Chain Queries
-
-**Core Queries:**
-```graphql
-query { chainInfo { vmName version readOnly } }
-query { block(hash: "0x...") { hash height timestamp } }
-query { account(address: "0x...") { address balance nonce } }
-query { balance(address: "0x...") }
-```
-
-**DEX Queries (v2/v3 subgraph compatible):**
-```graphql
-# Factory stats
-query { factory(id: "1") { poolCount pairCount txCount totalVolumeUSD totalValueLockedUSD } }
-
-# Price bundle (critical for quotes)
-query { bundle(id: "1") { ethPriceUSD luxPriceUSD } }
-
-# Token queries
-query { token(id: "0x...") { symbol name decimals volumeUSD totalValueLockedUSD derivedETH } }
-query { tokens(first: 100, orderBy: "volumeUSD", orderDirection: "desc") { id symbol volumeUSD } }
-
-# Pool queries (v3)
-query { pool(id: "0x...") { token0 { symbol } token1 { symbol } feeTier liquidity sqrtPrice tick } }
-query { pools(first: 100) { id volumeUSD totalValueLockedUSD } }
-
-# Pair queries (v2)
-query { pair(id: "0x...") { reserve0 reserve1 token0Price token1Price volumeUSD } }
-query { pairs(first: 100) { id reserveUSD volumeUSD } }
-
-# Tick data (v3)
-query { ticks(where: { pool: "0x..." }) { tickIdx liquidityGross liquidityNet price0 price1 } }
-
-# Swap history
-query { swaps(first: 100) { timestamp amount0 amount1 amountUSD pool pair } }
-
-# Time series
-query { tokenDayDatas(where: { token: "0x..." }, first: 30) { date volumeUSD priceUSD open high low close } }
-query { poolHourDatas(where: { pool: "0x..." }, first: 24) { periodStartUnix volumeUSD tvlUSD } }
-```
-
-### React Hooks
-
-```typescript
-import { useGChainInfo, useGChainBalance, useLuxNativeBalance } from '@luxfi/lx/data/gchain'
-
-// Chain info
-const { data: chainInfo } = useGChainInfo()
-
-// Account balance (raw)
-const { data: balance } = useGChainBalance(address)
-
-// Formatted Lux balance
-const { formatted, isLoading } = useFormattedLuxBalance(address)
-```
-
-### Lux CLI Single-Node Setup
-
-```bash
-# Start local network (uses port 9640+ for testnet)
-lux network start --testnet
-
-# Deploy DEX chain
-lux chain deploy dex --local
-
-# Check DEX status
-lux dex status
-
-# Check configured chains
-lux chain list
-```
-
-**DEX Chain Configuration (chain ID 36963):**
-- Type: L2 (Based Rollup)
-- VM: Custom DEX VM
-- Block Time: 1ms (HFT optimized)
-- Features: AMM + Perpetual futures
-- Max orders/block: 10,000
-
-## Lux Dev Mode (2025-12-30)
-
-### Overview
-
-The `lux dev start` command starts a single-node Lux network with instant block mining, perfect for local development and e2e testing.
-
-### Key Features
-
-- **K=1 Consensus**: No validator sampling required - blocks are accepted immediately
-- **Full Validator Signing**: All chains (C/P/X) have full validator signing capabilities
-- **Auto-Mining**: Blocks are mined instantly as transactions arrive
-- **Anvil-Compatible**: Port 8545 by default, same test accounts as Anvil/Hardhat
-- **Chain ID 1337**: Standard dev network ID
-
-### Starting Dev Mode
-
-```bash
-# Build CLI (if needed)
-cd ~/work/lux/cli && go build -o bin/lux ./main.go
-
-# Start dev mode (default port 8545)
-lux dev start
-
-# Custom port
-lux dev start --port 9650
-
-# With timed block interval (e.g., 1 block per second)
-lux dev start --automine 1s
-
-# Clean state and restart fresh
-lux dev start --clean
-```
-
-### Command Flags
-
-| Flag | Default | Description |
-|------|---------|-------------|
-| `--port` | 8545 | HTTP port for RPC (Anvil-compatible) |
-| `--automine` | (empty) | Block interval (e.g., `1s`, `500ms`); empty = instant |
-| `--clean` | false | Clean state before starting (fresh genesis) |
-| `--node-path` | (auto) | Path to luxd binary |
-| `--log-level` | info | Log level (debug, info, warn, error) |
-
-### Endpoints (Port 8545 default)
-
-| Endpoint | URL |
-|----------|-----|
-| C-Chain RPC | `http://localhost:8545/ext/bc/C/rpc` |
-| C-Chain WS | `ws://localhost:8545/ext/bc/C/ws` |
-| P-Chain RPC | `http://localhost:8545/ext/bc/P` |
-| X-Chain RPC | `http://localhost:8545/ext/bc/X` |
-| Health | `http://localhost:8545/ext/health` |
-
-### Test Accounts (Pre-funded)
-
-The dev genesis includes the standard Anvil/Hardhat test accounts:
-
-| Account | Address | Private Key |
-|---------|---------|-------------|
-| 0 | `0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266` | `0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80` |
-| 1 | `0x70997970C51812dc3A010C7d01b50e0d17dc79C8` | `0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d` |
-| 2-9 | Standard Anvil accounts 2-9 | Standard Anvil keys |
-
-### E2E Testing with Lux
-
-To use Lux instead of Anvil for e2e tests:
-
-1. Start Lux dev mode: `lux dev start`
-2. Set environment variable: `REACT_APP_CHAIN_ID=1337`
-3. Run e2e tests: `bun e2e:no-anvil`
-
-The test wallet (`0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266`) has funds on both Anvil and Lux dev mode.
-
-### Data Directory
-
-```
-~/.lux/dev/
-├── db/           # Blockchain database (cleared with --clean)
-└── logs/         # Node logs
-```
-
-### Stopping Dev Mode
-
-```bash
-lux dev stop
-# Or Ctrl+C if running in foreground
-```
-
-## G-Chain GraphQL Precompile (2025-12-30)
-
-### Overview
-
-A native EVM precompile at `0x0500` that enables any smart contract to execute GraphQL queries against the unified G-Chain query layer. This eliminates the need for off-chain oracles or subgraph services.
-
-### Precompile Address
-
-| Address | Name | Description |
-|---------|------|-------------|
-| `0x0500` | GraphQL Query | Main query interface |
-| `0x0501` | GraphQL Subscribe | Subscriptions (future) |
-| `0x0502` | GraphQL Cache | Query caching |
-
-### Files Created
-
-Location: `~/work/lux/precompiles/graph/`
-
-| File | Description |
-|------|-------------|
-| `types.go` | Query types, gas costs, constants |
-| `graph.go` | Main precompile implementation |
-| `schema.go` | Full GraphQL schema (DEX + OpenZeppelin) |
-| `registry.go` | Chain-to-precompile mapping |
-| `IGraphQL.sol` | Solidity interface |
-
-### Supported Query Types
-
-**DEX Queries (V2/V3 subgraph compatible):**
-- Factory stats, Bundle (ETH/LUX prices)
-- Tokens, Pools, Pairs, Ticks
-- Positions, Swaps, Mints, Burns
-- Time series (day/hour data)
-
-**OpenZeppelin Standard Library:**
-- ERC20, ERC721, ERC1155 contracts and balances
-- AccessControl roles and members
-- Governor proposals and votes
-- Timelock operations
-
-**Lux-Specific:**
-- Bridge tokens and transfers
-- Liquid vault positions (self-repaying loans)
-- Perpetual market positions
-
-### Usage from Solidity
-
-```solidity
-import {IGraphQL, GraphQL} from "@luxfi/precompiles/graph/IGraphQL.sol";
-
-contract MyContract {
-    address constant GRAPHQL = address(0x0500);
-
-    function getETHPrice() external returns (uint256) {
-        (uint256 ethPrice, ) = GraphQL.getPriceBundle();
-        return ethPrice;
-    }
-
-    function getPool(address poolAddr) external returns (
-        address token0, address token1, uint24 fee
-    ) {
-        return GraphQL.getPool(poolAddr);
-    }
-}
-```
-
-### Gas Costs
-
-| Operation | Gas |
-|-----------|-----|
-| Base query | 5,000 |
-| Simple query | 10,000 |
-| Complex query | 25,000 |
-| Cross-chain query | 50,000 |
-| Per entity | 1,000 |
-| Per byte response | 3 |
-
-### Precompile Registry by Chain
-
-| Chain | Description | Key Precompiles |
-|-------|-------------|-----------------|
-| A | Asset Chain | Warp, GraphQL |
-| B | Bridge Chain | Warp, Teleport, GraphQL |
-| C | Contract Chain | ALL (DEX, AI, PQ, ZK, etc.) |
-| D | DEX Chain | Full DEX suite, GraphQL |
-| G | Graph Chain | GraphQL (read-only) |
-| K | Keys Chain | PQ Crypto, Threshold, FHE |
-| P | Platform Chain | Warp, Rewards |
-| Q | Quantum Chain | Full PQ suite, Quasar |
-| T | Token Chain | Warp, Teleport, GraphQL |
-| X | Exchange Chain | Warp |
-| Z | Zoo Chain | DEX, AI, GraphQL |
-
-## Universal ZK Platform (2026-01-01)
-
-### Architecture Overview
-
-The Lux Universal ZK Platform enables proving anything, verifying cheaply, and composing proofs across chains. It uses a **Two Lane** approach:
-
-**Production Lane** (stable, cheap):
-- Groth16: External EVM cheap verification
-- PLONK: Universal setup / upgradability
-- STARK: Transparent, scalable, PQ-friendlier
-
-**Research Lane** (versioned, experimental):
-- Novel hashes, new arithmetizations, new commitment schemes
-- Custom verifiers with explicit risk labels
-- Sandboxed with versioned capability IDs
-
-### Chain Responsibilities
-
-| Chain | ID | Purpose | Key Precompiles |
-|-------|----|---------|-----------------| 
-| C | - | Contract Chain (apps) | ALL precompiles |
-| Z | - | ZK Substrate | Program registry, Receipts, STARK verify |
-| T | - | TFHE Threshold | Decrypt/reencrypt, Committee state |
-| K | - | Key Management | PQ KMS, ML-KEM, Policies |
-| A | - | Attestations | TEE, Identity, Compliance |
-
-### Z-Chain RPC Surface (zkp_*)
-
-```
-zkp_registerProgram    - Register program/circuit
-zkp_getProgram         - Get program metadata  
-zkp_submitProof        - Submit proof for verification
-zkp_getReceipt         - Get receipt by hash
-zkp_getLatestRoot      - Get current receipt tree root
-zkp_getInclusionProof  - Get Merkle proof for receipt
-```
-
-### Proof System IDs
-
-| ID | System | Notes |
-|----|--------|-------|
-| 1 | STARK | Transparent, PQ-friendlier (internal) |
-| 2 | Groth16 | Cheap external EVM verification |
-| 3 | PLONK | Universal setup |
-| 4 | Nova/Folding | Recursion-native |
-| 5-99 | Reserved | Production lane |
-| 100+ | Research | Experimental, versioned |
-
-### Universal Receipt Format
-
-The core interoperability object:
-```
-Receipt {
-    programId      - Hash of verified program
-    claimHash      - Hash of public inputs  
-    receiptHash    - Self-referential hash
-    proofSystemId  - 1=STARK, 2=Groth16, etc.
-    version        - Proof system version
-    verifiedAt     - Timestamp
-    parentReceipt  - For recursion
-    aggregationRoot - For batch receipts
-}
-```
-
-### ZK Precompile Addresses (Cryptographic ISA)
-
-| Address | Name | Gas | Description |
-|---------|------|-----|-------------|
-| 0x0501 | Poseidon2 | 800 | ZK-friendly hash (PQ-safe) |
-| 0x0502 | Pedersen | 6,000 | Legacy commitments (NOT PQ-safe) |
-| 0x0510 | STARK Field Arith | 8-15 | Goldilocks Fp |
-| 0x0511 | STARK Ext Arith | 25 | Extension field Fp2 |
-| 0x0512 | STARK Poseidon2 | 800 | Over Goldilocks |
-| 0x0513 | STARK FRI Fold | 2,000 | FRI layer folding |
-| 0x0514 | STARK Merkle | 400/level | Path verification |
-| 0x051F | STARK Verify | 100k-500k | Full proof verify |
-
-### Privacy Contracts (Post-Quantum)
-
-New PQ-safe privacy contracts added:
-
-| Contract | Purpose |
-|----------|---------|
-| `IPoseidon2.sol` | Poseidon2 precompile interface |
-| `Poseidon2Commitments.sol` | Note commitments using Poseidon2 |
-| `ZNotePQ.sol` | PQ-safe UTXO notes with Poseidon2 Merkle tree |
-| `ISTARKVerifier.sol` | STARK verification interface |
-| `IReceiptRegistry.sol` | Universal receipt registry interface |
-
-### Benchmark Results (Poseidon2 vs Pedersen)
-
-```
-BenchmarkPoseidon2Commitment     40M ops/sec   29ns/op
-BenchmarkPedersenCommit          13k ops/sec   92μs/op
-BenchmarkNoteCommitPoseidon2     24M ops/sec   50ns/op  
-BenchmarkNoteCommitPedersen      12k ops/sec   99μs/op
-
-Gas: Poseidon2=800, Pedersen=6,000 (7.5x cheaper)
-Speed: Poseidon2 is ~2000x faster
-Security: Poseidon2 is PQ-safe, Pedersen is NOT
-```
-
-**Recommendation**: Use Poseidon2 for all new privacy applications. Pedersen only for legacy/external chain compatibility.
-
-## Next Steps
-
-1. ~~**Fix SDK Dependencies**~~: DONE - All `@lux/*` forked to `@luxamm/*` wrappers (39 packages published to npm)
-2. **Connect to Standard AMM**: Wire up hooks to deployed V2/V3 contracts
-3. **Add Pool UI**: Implement pool list and add/remove liquidity
-4. **Add Positions UI**: Implement position management
-5. **DEX Precompile Integration**: Replace mock quotes with real precompile calls
-6. **Cross-chain Support**: Implement Warp/Teleport routing
-7. **Lux API Key**: Configure for non-Lux chain support
-8. **G-Chain Event Indexer**: Build indexer to populate DEX data from contract events
-9. **Wire Exchange to G-Chain**: Replace subgraph queries with G-Chain queries
-10. **Register Graph Precompile**: Add to subnet-evm precompile registry
-11. **Implement Z-Chain RPC**: Add zkp_* endpoints to node
-12. **Receipt Registry**: Deploy and wire up receipt registry on Z-chain
-13. **Groth16 Export**: Add receipt-to-Groth16 proof export for external EVMs
-
-### RPC URL Fix and Multi-Chain Transport Fix (2026-03-22)
-
-**Root cause of crashes on Zoo/Pars/subnet markets:**
-
-1. **Broken RPC URLs**: `apps/web/lib/chains.ts` used `https://api.lux.network/rpc` (returns 404).
-   Correct URL: `https://api.lux.network/mainnet/ext/bc/C/rpc`. Same issue for testnet.
-   Also fixed in `src/constants/networks.ts` (legacy codebase).
-
-2. **Missing wagmi transports**: `web3-provider.tsx` only configured transports for 6 of 9 chains
-   in SUPPORTED_CHAINS. Hanzo (36963), SPC (36911), and Pars (494949) had no transport --
-   wagmi throws when switching to those chains.
-
-3. **Broken default output token**: `getDefaultOutputToken()` only handled `isLuxChain` and
-   `isZooChain`. Subnet chains (Hanzo/SPC/Pars) fell through to Ethereum case, tried to find
-   USDC which doesn't exist on those chains. Fixed to check `isLuxEcosystem` and try LUSDC/wrapped native.
-
-4. **Missing chain colors**: `pkgs/ui/src/theme/color/colors.ts` had no entries for
-   chain_36963, chain_36911, chain_494949.
-
-**Working RPC URLs** (verified 2026-03-22):
-- Lux Mainnet: `https://api.lux.network/mainnet/ext/bc/C/rpc` (chain 96369)
-- Lux Testnet: `https://api.lux.network/testnet/ext/bc/C/rpc` (chain 96368)
-- Zoo Mainnet: `https://api.zoo.network/rpc` (chain 200200)
-- Zoo Testnet: `https://api.zoo-test.network/rpc` (down -- error 1033)
-- Pars: `https://api.lux.network/mainnet/ext/bc/2pUskxqaL5Bpx7uRUGG1fDjPckjxQ4UKX4sLKeaS1NdSVBJd3F/rpc` (404 -- chain offline)
-
-**V4 Pool Status (2026-03-22):**
-- DEX precompile (LP-9010) at `0x0000000000000000000000000000000000009010` returns `0x` (no code) on both Lux mainnet and Zoo mainnet
-- V4 pools via precompile are **NOT available** -- requires node upgrade to activate DEX precompiles
-- No standalone V4 PoolManager contract exists in lux/standard for deployment
-- `LuxV4Adapter.sol` points to Ethereum mainnet V4 address, not Lux
-
-**Token naming inconsistency**: Lux mainnet uses `LUSDC` (6 decimals), Lux testnet uses `LUSD` (18 decimals).
-Subnet chains (Hanzo/SPC/Pars) all use `LUSDC`. Keep this in mind when writing token lookups.
-
-### Package Rename: @luxfi/ui to @l.x/ui (2026-03-31)
-
-Renamed `@luxfi/ui` to `@l.x/ui` across the entire monorepo (1314 files). The exchange's UI package
-is a Tamagui/React Native cross-platform library (forked from Uniswap) that collided with the real
-`@luxfi/ui` npm package (Radix+Tailwind library from `~/work/lux/ui`). Other exchange packages already
-use the `@l.x/` namespace (`@l.x/extension`, `@l.x/api`, `@l.x/lx`, etc.).
-
-Changed `pkgs/wallet/package.json` from `"@luxfi/ui": "^6.1.3"` (npm) to `"@l.x/ui": "workspace:^"`.
-
-No other `@luxfi/*` packages were touched.
-
-### SwapFormStore Context Fix and Subnet Chain Integration (2026-03-24)
-
-**SwapFormStoreContextProvider crash fix:**
-- Routes `/swap`, `/send`, `/add`, `/positions/create/*`, `/buy`, `/sell`, `/limit` wrapped with `SwapFormStoreContextProvider` via `WithSwapFormStore` wrapper in `RouteDefinitions.tsx`
-- Shared components (CurrencyInputPanel, TokenRate, TokenOptions) call `useSwapFormStoreDerivedSwapInfo` which throws if the context is missing
-- The `<Swap />` component has its own internal provider, but the outer wrapper ensures the context is available before child components render
-
-**Subnet chains added to chain selector (Vite SPA):**
-- Added `Hanzo = 36963`, `SPC = 36911`, `Pars = 494949` to `UniverseChainId` enum in `pkgs/lx/src/features/chains/types.ts`
-- Created chain info files: `pkgs/lx/src/features/chains/evm/info/{hanzo,spc,pars}.ts`
-- Added `ChainHanzo`, `ChainSPC`, `ChainPars` to `ElementName` enum
-- Registered in `ORDERED_CHAINS`, `UNIVERSE_CHAIN_INFO`, block explorer logos, and GraphQL/URL mapping functions
-- No feature flag gating (enabled by default via `filterChainIdsByFeatureFlag` default behavior)
-- Chain colors already existed in `pkgs/ui/src/theme/color/colors.ts`
-
-**Architecture notes:**
-- The exchange has TWO UIs: Vite SPA (production, `apps/web/src/`) and Next.js App Router (experimental, `apps/web/app/`)
-- Dev command: `vite dev` (NOT `next dev`). Build: `vite build`. The SPA routes use react-router (`RouteDefinitions.tsx`)
-- The Next.js `app/` directory has a standalone `SwapWidget` that does NOT use `SwapFormStore` at all
-- `ORDERED_EVM_CHAINS` auto-includes new chains from `ORDERED_CHAINS` (filtered by `Platform.EVM`)
-- wagmi transports are auto-configured from chain info `rpcUrls` via `orderedTransportUrls(chain)`
-
-## White-Label Branding
-
-The exchange supports white-label deployments via `apps/web/config/brand.ts`.
-All branding is driven by `NEXT_PUBLIC_BRAND_*` env vars at build time. Defaults are for Lux Exchange.
-
-### Brand Deployments
-| Domain | Primary Chain | Coin |
-|--------|---------------|------|
-| lux.exchange | Lux C-Chain (96369) | LUX |
-| zoo.exchange | Zoo EVM (200200) | ZOO |
-| pars.market | Pars EVM (494949) | PARS |
-
-### Runtime Brand Config (White-Label)
-
-Brand is determined at runtime by `/config.json` mounted via K8s ConfigMap.
-SPA calls `loadBrandConfig()` before first render which populates the global
-`brand` object from `@l.x/config`.
-
-Key files:
-- `pkgs/config/src/brand.ts` - BrandConfig interface, loader, mutable `brand` singleton
-- `config/brands/*.json` - Per-brand JSON configs
-- `deploy/*.config.json` - K8s deployment configs (Zoo, Lux, etc.)
-
-BrandConfig fields (2026-03-26):
-- `name`, `title`, `description`, `legalEntity`
-- `walletName`, `protocolName`, `copyrightHolder` (derived from name if not set)
-- `appDomain`, `docsDomain`, `infoDomain`, `gatewayDomain`, `wsDomain`
-- `helpUrl`, `termsUrl`, `privacyUrl`, `downloadUrl`
-- `complianceEmail`, `supportEmail`
-- `twitter`, `github`, `discord`
-- `logoUrl`, `faviconUrl`, `primaryColor`
-- `theme.light` / `theme.dark` - BrandTheme color overrides (accent1, surface1, etc.)
-- `defaultChainId`, `supportedChainIds`, `walletConnectProjectId`
-- `insightsHost`, `insightsApiKey`
-
-KMS integration: set `KMS_BRAND_SECRET` env var on the serving layer to proxy
-`/config.json` from KMS (Infisical) instead of a ConfigMap file.
-
-Social links in Footer.tsx and insights app identity now read from `brand` config
-at runtime. No hardcoded domain or brand references remain in the critical path.
-
-### Subgraph Fallback Data (2026-03-31)
-
-**Problem**: The V3 subgraph at `api-exchange.lux.network/subgraph/v3` returns 502 (offline).
-The Lux Gateway at `dex.lux.network` serves a docs site (Next.js), not the JSON API.
-Both Lux mainnet and Zoo mainnet RPCs return 404 for JSON-RPC calls.
-This means the TradePage (`/#/advanced`) and Explore page showed no pool data.
-
-**Fix**: All three `sgQuery`/`fetchSubgraph` functions now catch network errors and fall back
-to `apps/web/src/pages/Trade/fallbackData.ts` -- a module containing pool, factory, swap,
-and candlestick data derived from the deployed V3 contracts on Lux Mainnet.
-
-**Files changed:**
-- `apps/web/src/pages/Trade/fallbackData.ts` -- New: fallback pool/factory/swap/chart data
-- `apps/web/src/pages/Trade/index.tsx` -- sgQuery catches errors, uses `matchFallbackQuery()`
-- `apps/web/src/state/explore/luxSubgraph.ts` -- Same pattern, dynamic import of fallback
-- `apps/web/src/state/explore/useExchangeStats.ts` -- `fetchSubgraph` catch returns fallback SubgraphData
-- `apps/web/e2e/advanced.spec.ts` -- Removed conditional `test.skip()` -- all data tests run unconditionally
-
-**Fallback pools** (from deployed V3 factory `0xb732BD88F25EdD9C3456638671fB37685D4B4e3f`):
-- WLUX/LETH 0.3%
-- WLUX/LUSDC 0.3%
-- LETH/LUSDC 0.05%
-- WLUX/LBTC 0.3%
-- LBTC/LUSDC 0.05%
-
-**When the subgraph comes back online**, the fallback is transparent -- `sgQuery` tries the
-subgraph first (5s timeout) and only uses fallback on failure.
-
-## Rules for AI Assistants
-
-1. **ALWAYS** update LLM.md with significant discoveries
-2. **NEVER** commit symlinked files (.AGENTS.md, CLAUDE.md, etc.)
-3. **NEVER** create random summary files - update THIS file
-4. **USE** Lux/Zoo chains and tokens as primary
-5. **PREFER** packages from the monorepo over duplicating code
-6. **USE** deployed addresses from ~/work/lux/standard/DEPLOYMENTS.md
-
----
-
-**Note**: This file serves as the single source of truth for all AI assistants working on this project.
+- X: [@zoo_labs](https://x.com/zoo_labs)
+- Discord: [discord.gg/edmZPTZjH9](https://discord.gg/edmZPTZjH9)
+- Email: [hi@zoo.exchange](mailto:hi@zoo.exchange)
