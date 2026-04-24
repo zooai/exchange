@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy-to-prod:
-    runs-on: lux-build-linux-amd64
+    runs-on: hanzo-deploy-linux-amd64
     steps:
       - uses: actions/checkout@v4
         with:
