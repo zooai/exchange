@@ -24,8 +24,10 @@ RUN if git ls-remote --heads --tags https://github.com/luxfi/exchange.git "${UPS
     fi && \
     git rev-parse HEAD > /tmp/upstream-sha
 
-# Overlay Zoo .env so Vite picks it up during install.
-COPY .env apps/web/.env.local
+# Overlay Zoo .env so Vite picks it up during install. Ship the
+# committed `.env.defaults` (no secrets) — `.env` is gitignored and
+# would not exist in CI build context.
+COPY .env.defaults apps/web/.env.local
 
 # Pull canonical Zoo brand.json + assets from @zooai/brand (source of
 # truth at ~/work/zoo/brand, published to npm).
