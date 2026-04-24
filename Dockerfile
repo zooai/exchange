@@ -35,13 +35,16 @@ RUN apk add --no-cache curl && \
     (npm pack @zooai/brand@latest && tar -xzf zooai-brand-*.tgz --strip-components=1)
 RUN cp /tmp/zb/brand.json apps/web/public/brand.json
 
+# Zoo logo marks from @zooai/logo on npm (canonical: ~/work/zoo/logo).
+RUN mkdir -p /tmp/zl && cd /tmp/zl && \
+    tar -xzf "$(npm pack @zooai/logo@latest 2>/dev/null | tail -1)" --strip-components=1 -C . 2>/dev/null || \
+    (npm pack @zooai/logo@latest && tar -xzf zooai-logo-*.tgz --strip-components=1) && \
+    cp /tmp/zl/dist/zoo-logo.svg          /app/apps/web/public/logo.svg && \
+    cp /tmp/zl/dist/zoo-favicon.svg       /app/apps/web/public/favicon.svg && \
+    cp /tmp/zl/dist/zoo-wordmark-color.svg /app/apps/web/public/wordmark.svg
+
 # Zoo CSP — narrows connect/img/frame sources to Zoo-owned + standard wallet endpoints.
 COPY csp.json apps/web/public/csp.json
-
-# Zoo brand assets (logo + favicon + wordmark) — overrides upstream.
-COPY brand-assets/logo.svg     apps/web/public/logo.svg
-COPY brand-assets/favicon.svg  apps/web/public/favicon.svg
-COPY brand-assets/wordmark.svg apps/web/public/wordmark.svg
 
 # Zoo featured tokens on the landing page token cloud — 14 native Zoo
 # (≥50%), 7 stocks (~25%), 7 private securities (~25%). Same shape as

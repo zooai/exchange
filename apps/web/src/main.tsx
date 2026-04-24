@@ -2,16 +2,7 @@
 // Declarative config. Separation of concerns. One way, one place.
 
 import { createRoot } from 'react-dom/client'
-import Exchange, {
-  zooMainnet,   // 200200 — production
-  zooTestnet,   // 200201 — staging
-  zooDevnet,    // 200202 — local dev
-  luxMainnet,   // 96369  — bridged assets live here
-  luxTestnet,   // 96368
-  hanzoMainnet, // 36963  — AI chain, cross-chain swaps
-  parsMainnet,  // 494949
-  liquidMainnet,// 8675309 — regulated securities (via Liquidity)
-} from '@luxfi/exchange'
+import Exchange, { canonicalChains, zooMainnet } from '@luxfi/exchange'
 import brand from '@zooai/brand'
 import Logo  from '@zooai/logo'
 import en from '@zooai/brand/translations/en-US.json'
@@ -27,15 +18,10 @@ createRoot(document.getElementById('root')!).render(
     logo={Logo}
 
     // ─── Chains ──────────────────────────────────────────────────────
-    // Zoo Network primary across all three envs; bridged assets live on
-    // Lux; Hanzo / Pars / Liquid EVM available for cross-chain swaps.
-    chains={[
-      zooMainnet, zooTestnet, zooDevnet,
-      luxMainnet, luxTestnet,
-      hanzoMainnet,
-      parsMainnet,
-      liquidMainnet,   // regulated securities
-    ]}
+    // canonicalChains = lux + hanzo + zoo + pars + liquid (all 3 envs each).
+    // Primary is Zoo. Bridging + cross-chain swaps work to/from any chain
+    // in the set. Add custom chains by spreading: [...canonicalChains, foo].
+    chains={canonicalChains}
     defaultChain={zooMainnet}
 
     // ─── DEX backend ─────────────────────────────────────────────────
