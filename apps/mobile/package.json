@@ -2,7 +2,8 @@
   "name": "@l.x/mobile",
   "version": "0.0.1",
   "private": true,
-  "license": "GPL-3.0-or-later",
+  "license": "BSD-3-Clause",
+  "author": "Zoo Labs Foundation Inc.",
   "main": "./index.js",
   "scripts": {
     "android": "nx android mobile",

@@ -2,8 +2,9 @@
   "name": "@zooai/exchange-web",
   "version": "1.0.0",
   "private": true,
-  "description": "Zoo Exchange \u2014 thin shim over @luxfi/exchange + @zooai/brand.",
-  "license": "GPL-3.0-or-later",
+  "description": "Zoo Exchange — thin shim over @luxfi/exchange + @zooai/brand.",
+  "license": "BSD-3-Clause",
+  "author": "Zoo Labs Foundation Inc.",
   "type": "module",
   "scripts": {
     "dev": "vite",
