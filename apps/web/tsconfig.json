@@ -1,9 +1,18 @@
 {
-  "extends": "@l.x/tsconfig/nextjs.json",
   "compilerOptions": {
-    "jsx": "react-jsx",
+    "target": "esnext",
+    "module": "esnext",
     "moduleResolution": "bundler",
-    "types": ["vite/client"]
+    "jsx": "react-jsx",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["vite/client"],
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"]
 }

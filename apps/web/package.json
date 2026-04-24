@@ -1,8 +1,8 @@
 {
-  "name": "@zooai/exchange-web",
+  "name": "@zooai/exchange",
   "version": "1.0.0",
   "private": true,
-  "description": "Zoo Exchange — a thin shim over @luxfi/exchange.",
+  "description": "Zoo Exchange — trade ZOO + any token on Zoo Network.",
   "license": "GPL-3.0-or-later",
   "type": "module",
   "scripts": {
@@ -12,13 +12,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@luxfi/exchange": "^2.0.0",
     "@zooai/brand": "^1.0.0",
+    "@zooai/exchange": "^2.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@l.x/tsconfig": "^1.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.7.0",
