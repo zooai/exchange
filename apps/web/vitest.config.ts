@@ -51,7 +51,7 @@ export default defineConfig({
   },
   plugins: [react()],
   optimizeDeps: {
-    include: ['ui/src', 'utilities/src', 'lux/src'],
+    include: ['@l.x/ui/src', '@l.x/utils/src', '@l.x/lx/src'],
     exclude: ['d3-array'],
   },
   resolve: {
@@ -62,11 +62,11 @@ export default defineConfig({
       // Use web app-specific i18n entry that doesn't import wallet's i18n-setup (must be before general lux/src alias)
       {
         find: /^lux\/src\/i18n$/,
-        replacement: path.resolve(__dirname, '../../pkgs/lx/src/i18n/index.web-app.ts'),
+        replacement: path.resolve(__dirname, '../../node_modules/@l.x/lx/src/i18n/index.web-app.ts'),
       },
-      { find: 'ui/src', replacement: path.resolve(__dirname, '../../pkgs/ui/src') },
-      { find: 'utilities/src', replacement: path.resolve(__dirname, '../../pkgs/utilities/src') },
-      { find: 'lux/src', replacement: path.resolve(__dirname, '../../pkgs/lx/src') },
+      { find: '@l.x/ui/src', replacement: path.resolve(__dirname, '../../node_modules/@l.x/ui/src') },
+      { find: '@l.x/utils/src', replacement: path.resolve(__dirname, '../../node_modules/@l.x/utils/src') },
+      { find: '@l.x/lx/src', replacement: path.resolve(__dirname, '../../node_modules/@l.x/lx/src') },
       { find: 'd3-array', replacement: path.resolve(__dirname, '../../node_modules/d3-array/dist/d3-array.min.js') },
       { find: 'react-native', replacement: 'react-native-web' },
       { find: 'react-native-gesture-handler', replacement: require.resolve('react-native-gesture-handler') },

@@ -5,7 +5,7 @@ import { logger } from '@l.x/utils/src/logger/logger'
 import { initialWalletState } from '@luxfi/wallet/src/features/wallet/slice'
 
 jest.mock('src/features/analytics/onboardingTimestamp')
-jest.mock('utilities/src/logger/logger', () => ({
+jest.mock('@l.x/utils/src/logger/logger', () => ({
   logger: {
     debug: jest.fn(),
     error: jest.fn(),

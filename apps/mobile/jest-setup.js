@@ -3,12 +3,12 @@ import 'react-native-gesture-handler/jestSetup';
 import { setUpTests } from 'react-native-reanimated';
 // Other
 import 'core-js' // necessary so setImmediate works in tests
-import 'utilities/jest-package-mocks'
-import 'lux/jest-package-mocks'
-import 'wallet/jest-package-mocks'
+import '@l.x/utils/jest-package-mocks'
+import '@l.x/lx/jest-package-mocks'
+import '@luxfi/wallet/jest-package-mocks'
 import 'config/jest-presets/ui/ui-package-mocks'
 
-import 'lux/src/i18n' // Uses real translations for tests
+import '@l.x/lx/src/i18n' // Uses real translations for tests
 
 import mockRNCNetInfo from '@react-native-community/netinfo/jest/netinfo-mock.js'
 

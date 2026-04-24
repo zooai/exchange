@@ -23,8 +23,8 @@ jest.mock('src/features/notifications/hooks/useNotificationOSPermissionsEnabled'
   useNotificationOSPermissionsEnabled: jest.fn(),
 }))
 
-jest.mock('wallet/src/features/wallet/accounts/editAccountSaga', () => ({
-  ...jest.requireActual('wallet/src/features/wallet/accounts/editAccountSaga'),
+jest.mock('@luxfi/wallet/src/features/wallet/accounts/editAccountSaga', () => ({
+  ...jest.requireActual('@luxfi/wallet/src/features/wallet/accounts/editAccountSaga'),
   editAccountActions: {
     trigger: jest.fn((payload) => ({ type: 'EDIT_ACCOUNT', payload })),
   },
@@ -38,7 +38,7 @@ jest.mock('src/utils/useAppStateTrigger', () => ({
   useAppStateTrigger: jest.fn(),
 }))
 
-jest.mock('wallet/src/features/wallet/hooks', () => ({
+jest.mock('@luxfi/wallet/src/features/wallet/hooks', () => ({
   useSelectAccountNotificationSetting: jest.fn(),
 }))
 

@@ -3,38 +3,7 @@
   "display": "Mobile App",
   "extends": "../../config/tsconfig/expo.json",
   "exclude": [".storybook/storybook.requires.ts"],
-  "references": [
-    {
-      "path": "../../pkgs/wallet"
-    },
-    {
-      "path": "../../pkgs/utilities"
-    },
-    {
-      "path": "../../pkgs/sessions"
-    },
-    {
-      "path": "../../pkgs/notifications"
-    },
-    {
-      "path": "../../pkgs/hashcash-native"
-    },
-    {
-      "path": "../../pkgs/gating"
-    },
-    {
-      "path": "../../pkgs/api"
-    },
-    {
-      "path": "../../pkgs/eslint-config"
-    },
-    {
-      "path": "../../pkgs/ui"
-    },
-    {
-      "path": "../../pkgs/lx"
-    }
-  ],
+  "references": [],
   "compilerOptions": {
     "types": ["jest", "node"],
     "paths": {

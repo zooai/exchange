@@ -1,4 +1,4 @@
-import { TestID } from '../../../../../pkgs/lx/src/test/fixtures/testIDs'
+import { TestID } from '../../../../../node_modules/@l.x/lx/src/test/fixtures/testIDs'
 
 const output: Record<string, string> = {}
 

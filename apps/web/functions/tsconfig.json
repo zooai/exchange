@@ -12,15 +12,5 @@
     "types": ["node", "@cloudflare/workers-types", "vitest/globals"]
   },
   "include": ["../../../index.d.ts", "**/*.ts", "**/*.tsx"],
-  "references": [
-    {
-      "path": "../../../pkgs/ui"
-    },
-    {
-      "path": "../../../pkgs/utilities"
-    },
-    {
-      "path": "../../../pkgs/lx"
-    }
-  ]
+  "references": []
 }

@@ -35,7 +35,7 @@ jest.mock('react-native', () => ({
 }))
 
 // Mock i18n
-jest.mock('lx/src/i18n', () => ({
+jest.mock('@l.x/lx/src/i18n', () => ({
   t: jest.fn((key) => key),
 }))
 

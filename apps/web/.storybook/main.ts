@@ -12,10 +12,10 @@ function getAbsolutePath(value: string): any {
 }
 const config: StorybookConfig = {
   stories: [
-    '../../../pkgs/ui/**/*.stories.?(ts|tsx)',
-    '../../../pkgs/ui/**/*.mdx',
-    '../../../pkgs/lx/src/**/*.stories.?(ts|tsx|js|jsx)',
-    '../../../pkgs/lx/**/*.mdx',
+    '../../../node_modules/@l.x/ui/**/*.stories.?(ts|tsx)',
+    '../../../node_modules/@l.x/ui/**/*.mdx',
+    '../../../node_modules/@l.x/lx/src/**/*.stories.?(ts|tsx|js|jsx)',
+    '../../../node_modules/@l.x/lx/**/*.mdx',
   ],
   addons: [
     getAbsolutePath('@storybook/preset-create-react-app'),

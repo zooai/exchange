@@ -7,7 +7,7 @@ import { CurrencyField } from '@l.x/lx/src/types/currency'
 const mockNavigateToSwapFlow = jest.fn()
 const mockNavigateToSend = jest.fn()
 
-jest.mock('wallet/src/contexts/WalletNavigationContext', () => ({
+jest.mock('@luxfi/wallet/src/contexts/WalletNavigationContext', () => ({
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   useWalletNavigation: () => ({
     navigateToSwapFlow: mockNavigateToSwapFlow,
@@ -15,7 +15,7 @@ jest.mock('wallet/src/contexts/WalletNavigationContext', () => ({
   }),
 }))
 
-jest.mock('wallet/src/features/wallet/hooks', () => ({
+jest.mock('@luxfi/wallet/src/features/wallet/hooks', () => ({
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   useActiveAccountAddressWithThrow: () => '0xTestAddress',
 }))
@@ -75,12 +75,12 @@ let mockCrossChainResult = {
   otherChainBalances: null as PortfolioBalance[] | null,
 }
 
-jest.mock('lx/src/data/balances/hooks/useCrossChainBalances', () => ({
+jest.mock('@l.x/lx/src/data/balances/hooks/useCrossChainBalances', () => ({
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   useCrossChainBalances: () => mockCrossChainResult,
 }))
 
-jest.mock('lx/src/data/graphql/lux-data-api/fragments', () => ({
+jest.mock('@l.x/lx/src/data/graphql/lux-data-api/fragments', () => ({
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   useTokenBasicProjectPartsFragment: () => ({
     data: { project: { tokens: [] } },

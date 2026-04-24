@@ -2,7 +2,7 @@ import { ChartPeriod } from '@luxamm/client-data-api/dist/data/v1/api_pb'
 import { useEffect, useMemo } from 'react'
 import { type ChartData } from 'src/components/home/PortfolioChart/SparklineChart'
 import { useSporeColors } from '@l.x/ui/src'
-import { useGetPortfolioHistoricalValueChartQuery } from 'lx/src/data/rest/getPortfolioChart'
+import { useGetPortfolioHistoricalValueChartQuery } from '@l.x/lx/src/data/rest/getPortfolioChart'
 import { logger } from '@l.x/utils/src/logger/logger'
 
 export function usePortfolioChartData({

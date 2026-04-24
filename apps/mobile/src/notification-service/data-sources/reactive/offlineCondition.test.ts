@@ -17,7 +17,7 @@ jest.mock('@react-native-community/netinfo', () => ({
 
 // Mock selectors
 jest.mock('src/features/modals/selectSomeModalOpen')
-jest.mock('wallet/src/features/wallet/selectors')
+jest.mock('@luxfi/wallet/src/features/wallet/selectors')
 
 const mockSelectSomeModalOpen = selectSomeModalOpen as jest.MockedFunction<typeof selectSomeModalOpen>
 const mockSelectFinishedOnboarding = selectFinishedOnboarding as jest.MockedFunction<typeof selectFinishedOnboarding>

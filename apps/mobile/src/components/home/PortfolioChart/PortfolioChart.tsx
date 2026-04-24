@@ -10,7 +10,7 @@ import { Loader } from 'src/components/loading/loaders'
 import { Flex, Separator, Text, TouchableArea, useSporeColors } from '@l.x/ui/src'
 import { useDeviceDimensions } from '@l.x/ui/src/hooks/useDeviceDimensions'
 import { opacify } from '@l.x/ui/src/theme'
-import { TestID } from 'lx/src/test/fixtures/testIDs'
+import { TestID } from '@l.x/lx/src/test/fixtures/testIDs'
 
 const EXPANDED_CHART_HEIGHT = 180
 const COLLAPSED_CHART_VISIBLE_HEIGHT = 70

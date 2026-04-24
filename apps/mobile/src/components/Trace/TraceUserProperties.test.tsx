@@ -36,8 +36,8 @@ jest.mock('@l.x/sessions', () => ({
   luxIdentifierQuery: jest.fn().mockReturnValue({}),
 }))
 jest.mock('react-native/Libraries/Utilities/useColorScheme')
-jest.mock('wallet/src/features/gating/userPropertyHooks')
-jest.mock('wallet/src/features/wallet/Keyring/Keyring', () => {
+jest.mock('@luxfi/wallet/src/features/gating/userPropertyHooks')
+jest.mock('@luxfi/wallet/src/features/wallet/Keyring/Keyring', () => {
   return {
     Keyring: {
       getMnemonicIds: (): Promise<string[]> => Promise.resolve([]),
@@ -45,7 +45,7 @@ jest.mock('wallet/src/features/wallet/Keyring/Keyring', () => {
     },
   }
 })
-jest.mock('wallet/src/features/accounts/useAccountListData', () => {
+jest.mock('@luxfi/wallet/src/features/accounts/useAccountListData', () => {
   return {
     useAccountBalances: jest.fn().mockReturnValue({ totalBalance: 0 }),
   }

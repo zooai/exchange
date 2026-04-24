@@ -30,12 +30,7 @@
     "useUnknownInCatchVariables": false,
     "paths": {
       "@/*": ["./*"],
-      "~/*": ["./src/*"],
-      "@l.x/ui/src/*": ["../../pkgs/ui/src/*"],
-      "@l.x/utils/src/*": ["../../pkgs/utilities/src/*"],
-      "@l.x/lx/src/*": ["../../pkgs/lx/src/*"],
-      "@luxfi/dex/src/*": ["../../pkgs/dex/src/*"],
-      "@luxfi/exchange/src/*": ["../../pkgs/exchange/src/*"]
+      "~/*": ["./src/*"]
     }
   },
   "include": [
@@ -55,34 +50,7 @@
   "exclude": ["scripts/build-vercel.ts"],
   "references": [
     {
-      "path": "../../pkgs/utilities"
-    },
-    {
-      "path": "../../pkgs/websocket"
-    },
-    {
-      "path": "../../pkgs/sessions"
-    },
-    {
-      "path": "../../pkgs/prices"
-    },
-    {
-      "path": "../../pkgs/notifications"
-    },
-    {
-      "path": "../../pkgs/gating"
-    },
-    {
-      "path": "../../pkgs/ui"
-    },
-    {
-      "path": "../../pkgs/config"
-    },
-    {
-      "path": "../../pkgs/api"
-    },
-    {
-      "path": "../../pkgs/lx"
+      "path": "../../pkgs/provider"
     }
   ]
 }

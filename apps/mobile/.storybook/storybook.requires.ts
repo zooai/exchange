@@ -20,26 +20,26 @@ const normalizedStories = [
   },
   {
     titlePrefix: "",
-    directory: "../../pkgs/ui/src",
+    directory: "../../node_modules/@l.x/ui/src",
     files: "**/*.stories.?(ts|tsx|js|jsx)",
     importPathMatcher:
       /^\.(?:(?:^|\/|(?:(?:(?!(?:^|\/)\.).)*?)\/)(?!\.)(?=.)[^/]*?\.stories\.(?:ts|tsx|js|jsx)?)$/,
     // @ts-ignore
     req: require.context(
-      "../../../pkgs/ui/src",
+      "../../../node_modules/@l.x/ui/src",
       true,
       /^\.(?:(?:^|\/|(?:(?:(?!(?:^|\/)\.).)*?)\/)(?!\.)(?=.)[^/]*?\.stories\.(?:ts|tsx|js|jsx)?)$/
     ),
   },
   {
     titlePrefix: "",
-    directory: "../../pkgs/lx/src",
+    directory: "../../node_modules/@l.x/lx/src",
     files: "**/*.stories.?(ts|tsx|js|jsx)",
     importPathMatcher:
       /^\.(?:(?:^|\/|(?:(?:(?!(?:^|\/)\.).)*?)\/)(?!\.)(?=.)[^/]*?\.stories\.(?:ts|tsx|js|jsx)?)$/,
     // @ts-ignore
     req: require.context(
-      "../../../pkgs/lx/src",
+      "../../../node_modules/@l.x/lx/src",
       true,
       /^\.(?:(?:^|\/|(?:(?:(?!(?:^|\/)\.).)*?)\/)(?!\.)(?=.)[^/]*?\.stories\.(?:ts|tsx|js|jsx)?)$/
     ),

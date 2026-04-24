@@ -12,12 +12,12 @@ import { MobileScreens, OnboardingScreens } from '@l.x/lx/src/types/screens/mobi
 import { GuiProvider } from '@luxfi/wallet/src/providers/gui-provider'
 import { ACCOUNT, preloadedWalletPackageState } from '@luxfi/wallet/src/test/fixtures'
 
-jest.mock('wallet/src/features/wallet/accounts/utils', () => ({
+jest.mock('@luxfi/wallet/src/features/wallet/accounts/utils', () => ({
   hasExternalBackup: jest.fn(),
   hasBackup: jest.fn(),
 }))
 
-jest.mock('wallet/src/features/onboarding/OnboardingContext', () => ({
+jest.mock('@luxfi/wallet/src/features/onboarding/OnboardingContext', () => ({
   useOnboardingContext: jest.fn().mockReturnValue({
     getOnboardingOrImportedAccount: jest.fn().mockReturnValue({ address: 'mockedAccountAddress' }),
   }),

@@ -8,7 +8,7 @@ import { renderWithProviders } from 'src/test/render'
 import { ModalName } from '@l.x/lx/src/features/telemetry/constants'
 
 // Mock required modules with simpler implementation
-jest.mock('wallet/src/features/transactions/swap/WalletSwapFlow', () => ({
+jest.mock('@luxfi/wallet/src/features/transactions/swap/WalletSwapFlow', () => ({
   WalletSwapFlow: function MockWalletSwapFlow(): string {
     return 'MockedWalletSwapFlow'
   },

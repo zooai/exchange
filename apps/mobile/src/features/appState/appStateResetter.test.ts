@@ -7,10 +7,10 @@ import { createMobileAppStateResetter } from 'src/features/appState/appStateRese
 import { openModal } from 'src/features/modals/modalSlice'
 import { NotifSettingType } from 'src/features/notifications/constants'
 import { updateNotifSettings } from 'src/features/notifications/slice'
-import { ScannerModalState } from 'lx/src/components/ReceiveQRCode/constants'
-import { pushNotification } from 'lx/src/features/notifications/slice/slice'
-import { AppNotificationType } from 'lx/src/features/notifications/slice/types'
-import { ModalName } from 'lx/src/features/telemetry/constants'
+import { ScannerModalState } from '@l.x/lx/src/components/ReceiveQRCode/constants'
+import { pushNotification } from '@l.x/lx/src/features/notifications/slice/slice'
+import { AppNotificationType } from '@l.x/lx/src/features/notifications/slice/types'
+import { ModalName } from '@l.x/lx/src/features/telemetry/constants'
 
 jest.mock('expo-image', () => ({
   Image: {

@@ -8,7 +8,7 @@ import { OnboardingScreens } from '@l.x/lx/src/types/screens/mobile'
 import { setHasCopiedPrivateKeys } from '@luxfi/wallet/src/features/behaviorHistory/slice'
 import { restoreMnemonicComplete } from '@luxfi/wallet/src/features/wallet/slice'
 
-jest.mock('lx/src/features/telemetry/send', () => ({
+jest.mock('@l.x/lx/src/features/telemetry/send', () => ({
   sendAnalyticsEvent: jest.fn(),
 }))
 

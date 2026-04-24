@@ -203,9 +203,7 @@
     "lintConfig": [
       "{workspaceRoot}/.biome*",
       "{workspaceRoot}/.eslint*",
-      "{workspaceRoot}/.depcheckrc*",
-      "{workspaceRoot}/pkgs/biome-config/**/*",
-      "{workspaceRoot}/pkgs/eslint-config/**/*"
+      "{workspaceRoot}/.depcheckrc*"
     ],
     "mobileGlobals": ["{workspaceRoot}/metro.config.*", "{workspaceRoot}/Gemfile*"],
     "sourceFiles": [

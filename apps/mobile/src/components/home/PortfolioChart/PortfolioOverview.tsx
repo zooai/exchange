@@ -8,12 +8,12 @@ import { Flex, TouchableArea } from '@l.x/ui/src'
 import { useLayoutAnimationOnChange } from '@l.x/ui/src/animations/layout'
 import { AnglesMaximize } from '@l.x/ui/src/components/icons/AnglesMaximize'
 import { AnglesMinimize } from '@l.x/ui/src/components/icons/AnglesMinimize'
-import { getPortfolioHistoricalValueChartQuery } from 'lx/src/data/rest/getPortfolioChart'
-import { usePortfolioTotalValue } from 'lx/src/features/dataApi/balances/balancesRest'
-import { PortfolioBalance } from 'lx/src/features/portfolio/PortfolioBalance/PortfolioBalance'
-import { usePortfolioChartBalanceMismatch } from 'lx/src/features/portfolio/usePortfolioChartBalanceMismatch'
-import { useHapticFeedback } from 'lx/src/features/settings/useHapticFeedback/useHapticFeedback'
-import { TestID } from 'lx/src/test/fixtures/testIDs'
+import { getPortfolioHistoricalValueChartQuery } from '@l.x/lx/src/data/rest/getPortfolioChart'
+import { usePortfolioTotalValue } from '@l.x/lx/src/features/dataApi/balances/balancesRest'
+import { PortfolioBalance } from '@l.x/lx/src/features/portfolio/PortfolioBalance/PortfolioBalance'
+import { usePortfolioChartBalanceMismatch } from '@l.x/lx/src/features/portfolio/usePortfolioChartBalanceMismatch'
+import { useHapticFeedback } from '@l.x/lx/src/features/settings/useHapticFeedback/useHapticFeedback'
+import { TestID } from '@l.x/lx/src/test/fixtures/testIDs'
 
 interface PortfolioChartSectionProps {
   evmAddress: string

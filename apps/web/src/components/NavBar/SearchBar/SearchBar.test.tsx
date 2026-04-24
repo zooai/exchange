@@ -10,7 +10,7 @@ vi.mock('gui', async () => {
   }
 })
 
-vi.mock('lx/src/components/modals/ScrollLock', () => ({
+vi.mock('@l.x/lx/src/components/modals/ScrollLock', () => ({
   useUpdateScrollLock: vi.fn(),
 }))
 

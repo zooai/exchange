@@ -48,22 +48,22 @@ import {
   getOptionalServiceProviderLogo,
   isSupportedFORCurrency,
   organizeQuotesIntoSections,
-} from 'lx/src/features/fiatOnRamp/utils'
-import { pushNotification } from 'lx/src/features/notifications/slice/slice'
-import { AppNotificationType } from 'lx/src/features/notifications/slice/types'
-import { FiatOffRampEventName, FiatOnRampEventName } from 'lx/src/features/telemetry/constants'
-import { sendAnalyticsEvent } from 'lx/src/features/telemetry/send'
-import { type FORAmountEnteredProperties } from 'lx/src/features/telemetry/types'
+} from '@l.x/lx/src/features/fiatOnRamp/utils'
+import { pushNotification } from '@l.x/lx/src/features/notifications/slice/slice'
+import { AppNotificationType } from '@l.x/lx/src/features/notifications/slice/types'
+import { FiatOffRampEventName, FiatOnRampEventName } from '@l.x/lx/src/features/telemetry/constants'
+import { sendAnalyticsEvent } from '@l.x/lx/src/features/telemetry/send'
+import { type FORAmountEnteredProperties } from '@l.x/lx/src/features/telemetry/types'
 import {
   DecimalPadCalculatedSpaceId,
   DecimalPadCalculateSpace,
   DecimalPadInput,
   type DecimalPadInputRef,
-} from 'lx/src/features/transactions/components/DecimalPadInput/DecimalPadInput'
-import { useUSDTokenUpdater } from 'lx/src/features/transactions/hooks/useUSDTokenUpdater'
-import { CurrencyField } from 'lx/src/types/currency'
-import { FiatOnRampScreens } from 'lx/src/types/screens/mobile'
-import { currencyIdToAddress } from 'lx/src/utils/currencyId'
+} from '@l.x/lx/src/features/transactions/components/DecimalPadInput/DecimalPadInput'
+import { useUSDTokenUpdater } from '@l.x/lx/src/features/transactions/hooks/useUSDTokenUpdater'
+import { CurrencyField } from '@l.x/lx/src/types/currency'
+import { FiatOnRampScreens } from '@l.x/lx/src/types/screens/mobile'
+import { currencyIdToAddress } from '@l.x/lx/src/utils/currencyId'
 import { truncateToMaxDecimals } from '@l.x/utils/src/format/truncateToMaxDecimals'
 import { logger } from '@l.x/utils/src/logger/logger'
 import { isIOS, isWebPlatform } from '@l.x/utils/src/platform'

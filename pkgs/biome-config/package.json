@@ -1,8 +1,0 @@
-{
-  "name": "@luxfi/biome-config",
-  "version": "1.0.6",
-  "private": false,
-  "scripts": {
-    "prepare": "node ./scripts/generate.js || true"
-  }
-}

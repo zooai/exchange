@@ -1,9 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../../index.d.ts" />
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
-/// <reference path="../../../pkgs/lx/src/react-native-dotenv.d.ts" />
+/// <reference path="../../../node_modules/@l.x/lx/src/react-native-dotenv.d.ts" />
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
-/// <reference path="../../../pkgs/ui/src/env.d.ts" />
+/// <reference path="../../../node_modules/@l.x/ui/src/env.d.ts" />
 
 import { config, GuiGroupNames } from '~/gui.config'
 
