@@ -1,76 +1,74 @@
 # Zoo Exchange
 
-[zoo.exchange](https://zoo.exchange) — white-label Zoo Network deployment
-of the **Lux Exchange** SPA. Two surfaces:
+[zoo.exchange](https://zoo.exchange) — Zoo Network's DEX. A thin shim
+over [`@luxfi/exchange`](https://www.npmjs.com/package/@luxfi/exchange).
 
-- **Web** — Docker overlay of [`ghcr.io/luxfi/exchange`](https://github.com/luxfi/exchange)
-  + [`@zooai/brand`](https://www.npmjs.com/package/@zooai/brand) from npm.
-  Zero source code here. `Dockerfile` is ~15 lines.
-- **Mobile** — Expo app in [`apps/mobile`](apps/mobile), consumes
-  `@l.x/*` + `@luxfi/wallet` + `@zooai/brand` from npm.
+## The whole app
 
-## Architecture
+```tsx
+// apps/web/src/main.tsx
+import { createRoot } from 'react-dom/client'
+import Exchange from '@luxfi/exchange'
+import brand from '@zooai/brand'
 
-```
-ghcr.io/luxfi/exchange:latest         ←  canonical SPA (hanzoai/spa + @hanzogui bones)
-           │
-           └── FROM  (Dockerfile)
-                │
-                └── COPY /brand from @zooai/brand  ←  Zoo identity
-                       │
-                       └── K8s ConfigMap mounts /config.json  ←  chainId 200200, RPC, IAM
+createRoot(document.getElementById('root')!).render(<Exchange brand={brand} />)
 ```
 
-**Canonical source for the SPA is upstream** at
-`~/work/lux/exchange` → `ghcr.io/luxfi/exchange`. This repo holds only
-what's Zoo-specific:
-- `Dockerfile` — the overlay recipe
-- `apps/mobile/` — the Zoo Expo app
-
-Nothing else. No `src/`, no `pkgs/`, no `contracts/`, no `subgraphs/`,
-no `deploy/`, no vendored configs. If you need to change the web SPA,
-send a PR to [luxfi/exchange](https://github.com/luxfi/exchange). If you
-need to change the Zoo brand, edit [`~/work/zoo/brand`](https://www.npmjs.com/package/@zooai/brand)
-and republish.
+That's it. The rest (providers, router, swap/pool/portfolio, wagmi,
+Tamagui bones via `@hanzo/gui`, Insights telemetry, i18n, theme) lives
+upstream in `@luxfi/exchange` — one canonical home at
+[luxfi/exchange](https://github.com/luxfi/exchange).
 
 ## Customize
 
-**Add Zoo-specific pages or widgets:** PR upstream to `luxfi/exchange` to
-add your route/widget behind a feature flag. Toggle the flag via
-`/config.json` ConfigMap for `zoo.exchange` only.
+Zoo-specific routes, widgets, chains, and regulated-provider adapters
+register through a **single** `register` API:
 
-**Different chain / tokens:** `/config.json` defaults (K8s ConfigMap at
-deploy time). `defaultChainId` + `supportedChainIds` + RPC hosts.
+```ts
+import Exchange from '@luxfi/exchange'
 
-**Different brand:** `@zooai/brand` is a standalone npm package —
-colors, logos, fonts, `brand.json`. Publishing a new version + tagging
-the Dockerfile rebuilds with the new brand.
+Exchange.register({ route:    { path: '/stake', component: ZooStakePage } })
+Exchange.register({ widget:   { slot: 'swap.footer', component: ZooPromo } })
+Exchange.register({ chain:    zooMainnet })
+Exchange.register({ provider: { adapter, router, onboardingUrl } })
+```
+
+Separation of concerns is the register *payload*, not a second surface
+— one way to extend the app.
+
+## Brand
+
+Brand lives at [`@zooai/brand`](https://www.npmjs.com/package/@zooai/brand)
+(source at `~/work/zoo/brand`). Logo, colors, fonts, chainId, RPC.
+
+Changing the brand = bump `@zooai/brand`, rebuild the image. Zero code
+changes in this repo.
 
 ## Mobile
 
 ```bash
-pnpm install
-pnpm mobile ios      # iOS simulator
-pnpm mobile android  # Android emulator
-pnpm mobile start    # Metro bundler
+pnpm mobile ios
+pnpm mobile android
 ```
 
-Mobile consumes `@l.x/api`, `@l.x/lx`, `@l.x/ui`, `@l.x/utils`,
-`@luxfi/wallet`, `@zooai/brand` directly from npm.
+[`apps/mobile`](apps/mobile) — Expo. Consumes `@l.x/*` + `@luxfi/wallet`
++ `@zooai/brand` from npm.
 
-## Deploy
+## Web build
 
-Web: CI builds `ghcr.io/zooai/exchange:v*` and pushes to GHCR. Universe
-dispatch updates the K8s ConfigMap + rolls the deployment.
+```bash
+pnpm --filter @zooai/exchange-web build
+```
 
-Mobile: EAS build → TestFlight / Play Store via `pnpm mobile build`.
+Docker: `ghcr.io/hanzoai/spa:1.2.0` serves the tiny Vite bundle; runtime
+`/config.json` from K8s ConfigMap drives `defaultChainId`, RPC hosts,
+gateway. One image, one bundle, whatever env.
 
 ## Contact
 
-- X: [@zoocoin](https://x.com/zoocoin)
-- Discord: [discord.gg/zoo](https://discord.gg/zoo)
-- Email: [hi@zoo.ngo](mailto:hi@zoo.ngo)
+X: [@zoocoin](https://x.com/zoocoin) · Discord: [discord.gg/zoo](https://discord.gg/zoo)
+· [hi@zoo.ngo](mailto:hi@zoo.ngo)
 
 ## License
 
-GPL-3.0-or-later — see [LICENSE](LICENSE).
+GPL-3.0-or-later.
