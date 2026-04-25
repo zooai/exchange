@@ -11,10 +11,11 @@ FROM node:22-alpine AS spa
 RUN apk add --no-cache git python3 make g++
 WORKDIR /app
 
-# Pin UPSTREAM_REF to a known-good commit. v5.146.0 shipped a broken
-# expo-modules-core dependency; 08e544ea1b is the last pre-breakage commit
-# on upstream main — same pin liquidityio/swap uses.
-ARG UPSTREAM_REF=08e544ea1b
+# Pin UPSTREAM_REF to upstream HEAD past v5.146.0 — same as
+# liquidityio/swap. Post-v5.146.0 fixes cleared the expo-modules-core
+# breakage AND landed StatsigProvider repair, Web3Provider const→let,
+# Vite envDefines filter, Docker apps/extension drop.
+ARG UPSTREAM_REF=b252527656890c4c5bc80c7378b5755da89a65fe
 RUN if git ls-remote --heads --tags https://github.com/luxfi/exchange.git "${UPSTREAM_REF}" | grep -q .; then \
       git clone --depth=1 --branch="${UPSTREAM_REF}" \
         https://github.com/luxfi/exchange.git .; \
