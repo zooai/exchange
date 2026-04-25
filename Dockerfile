@@ -11,11 +11,10 @@ FROM node:22-alpine AS spa
 RUN apk add --no-cache git python3 make g++
 WORKDIR /app
 
-# Pin UPSTREAM_REF to upstream HEAD past v5.146.0 — same as
-# liquidityio/swap. Post-v5.146.0 fixes cleared the expo-modules-core
-# breakage AND landed StatsigProvider repair, Web3Provider const→let,
-# Vite envDefines filter, Docker apps/extension drop.
-ARG UPSTREAM_REF=b252527656890c4c5bc80c7378b5755da89a65fe
+# Pin UPSTREAM_REF to v5.142.0 — last known-buildable upstream commit.
+# v5.146.0+ has expo-modules-core@55 breakage; HEAD never builds clean.
+# Same pin as liquidityio/swap.
+ARG UPSTREAM_REF=08e544ea1b
 RUN if git ls-remote --heads --tags https://github.com/luxfi/exchange.git "${UPSTREAM_REF}" | grep -q .; then \
       git clone --depth=1 --branch="${UPSTREAM_REF}" \
         https://github.com/luxfi/exchange.git .; \
@@ -62,13 +61,6 @@ RUN sed -i \
 # Drop mobile + extension apps — web SPA only.
 RUN rm -rf apps/mobile apps/extension && rm -f pnpm-lock.yaml
 
-# Upstream bug at HEAD: workspace package naming mismatches.
-# Both jest-presets and vitest-presets are referenced unscoped but
-# declared as @l.x/{jest,vitest}-preset. Rename to match.
-RUN sed -i 's|"name": "@l\.x/vitest-preset"|"name": "vitest-presets"|' \
-      config/vitest-presets/package.json 2>/dev/null || true
-RUN sed -i 's|"name": "@l\.x/jest-preset"|"name": "jest-presets"|' \
-      config/jest-presets/package.json 2>/dev/null || true
 
 # Corepack + pnpm + install web workspace only.
 RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
