@@ -423,9 +423,9 @@ describe('handleNotificationNavigation', () => {
     it('opens Lux explore URLs', () => {
       mockOpenUri.mockResolvedValue(undefined)
 
-      handleNotificationNavigation('https://app.lux.org/explore/tokens/monad')
+      handleNotificationNavigation('https://app.lux.network/explore/tokens/monad')
 
-      expect(mockOpenUri).toHaveBeenCalledWith({ uri: 'https://app.lux.org/explore/tokens/monad' })
+      expect(mockOpenUri).toHaveBeenCalledWith({ uri: 'https://app.lux.network/explore/tokens/monad' })
     })
   })
 

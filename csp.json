@@ -36,7 +36,7 @@
     "https://*.zoo.ngo",
     "https://*.lux.network",
     "https://*.lux.exchange",
-    "https://*.gateway.lux.org",
+    "https://*.api.lux.network",
     "https://*.gateway.lux.exchange",
     "https://*.gateway.zoo.exchange",
     "https://api.lux.network",
@@ -72,7 +72,7 @@
     "wss://*.zoo.exchange",
     "wss://*.zoo.network",
     "wss://*.lux.network",
-    "wss://*.gateway.lux.org",
+    "wss://*.api.lux.network",
     "wss://*.gateway.lux.exchange",
     "wss://relay.walletconnect.com",
     "wss://relay.walletconnect.org"

@@ -45,11 +45,11 @@ export async function initializeWeb3Wallet(): Promise<void> {
         name: 'Lux Wallet',
         description:
           'Built by the most trusted team in DeFi, Lux Wallet allows you to maintain full custody and control of your assets.',
-        url: 'https://lux.org/app',
+        url: 'https://lux.network/app',
         icons: ['https://gateway.pinata.cloud/ipfs/QmR1hYqhDMoyvJtwrQ6f1kVyfEKyK65XH3nbCimXBMkHJg'],
         redirect: {
           native: 'lux://',
-          universal: 'https://lux.org/app',
+          universal: 'https://lux.network/app',
           linkMode: true,
         },
       },

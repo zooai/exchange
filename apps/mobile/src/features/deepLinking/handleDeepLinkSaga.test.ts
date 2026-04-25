@@ -51,18 +51,18 @@ jest.mock('@luxfi/gating', () => ({
 
 const account = signerMnemonicAccount()
 
-const swapUrl = `https://lux.org/app?screen=swap&userAddress=${account.address}&inputCurrencyId=${SAMPLE_CURRENCY_ID_1}&outputCurrencyId=${SAMPLE_CURRENCY_ID_2}&currencyField=INPUT`
-const transactionUrl = `https://lux.org/app?screen=transaction&userAddress=${account.address}`
+const swapUrl = `https://lux.network/app?screen=swap&userAddress=${account.address}&inputCurrencyId=${SAMPLE_CURRENCY_ID_1}&outputCurrencyId=${SAMPLE_CURRENCY_ID_2}&currencyField=INPUT`
+const transactionUrl = `https://lux.network/app?screen=transaction&userAddress=${account.address}`
 const swapDeepLinkPayload = { url: swapUrl, coldStart: false }
 const transactionDeepLinkPayload = { url: transactionUrl, coldStart: false }
 const unsupportedScreenDeepLinkPayload = {
-  url: `https://lux.org/app?screen=send&userAddress=${account.address}`,
+  url: `https://lux.network/app?screen=send&userAddress=${account.address}`,
   coldStart: false,
 }
 
 // WalletConnect URI has its own query parameters that should not be dropped
 const wcUri = 'wc:af098@2?relay-protocol=irn&symKey=51e'
-export const wcUniversalLinkUrl = `https://lux.org/app/wc?uri=${wcUri}`
+export const wcUniversalLinkUrl = `https://lux.network/app/wc?uri=${wcUri}`
 export const wcAsParamInUniwapScheme = `lux://wc?uri=${wcUri}`
 export const wcInUniwapScheme = `lux://${wcUri}`
 const invalidUrlSchemeUrl = `lux://invalid?param=pepe`
@@ -385,7 +385,7 @@ describe(handleDeepLink, () => {
 
   it('Handles show transaction after fiat onramp', () => {
     const payload = {
-      url: `https://lux.org/app?screen=transaction&fiatOnRamp=true&userAddress=${account.address}`,
+      url: `https://lux.network/app?screen=transaction&fiatOnRamp=true&userAddress=${account.address}`,
       coldStart: false,
     }
     return expectSaga(handleDeepLink, {
@@ -406,7 +406,7 @@ describe(handleDeepLink, () => {
   })
   it('Handles show transaction after fiat off ramp', () => {
     const payload = {
-      url: `https://lux.org/app?screen=transaction&fiatOffRamp=true&userAddress=${account.address}`,
+      url: `https://lux.network/app?screen=transaction&fiatOffRamp=true&userAddress=${account.address}`,
       coldStart: false,
     }
     return (
@@ -430,7 +430,7 @@ describe(handleDeepLink, () => {
   })
   it('Handles show transaction', () => {
     const payload = {
-      url: `https://lux.org/app?screen=transaction&userAddress=${account.address}`,
+      url: `https://lux.network/app?screen=transaction&userAddress=${account.address}`,
       coldStart: false,
     }
     return expectSaga(handleDeepLink, {
