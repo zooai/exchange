@@ -62,11 +62,13 @@ RUN sed -i \
 # Drop mobile + extension apps — web SPA only.
 RUN rm -rf apps/mobile apps/extension && rm -f pnpm-lock.yaml
 
-# Upstream bug at HEAD: pkgs/{utilities,lx,ui}/package.json reference
-# "vitest-presets" (plural) but config/vitest-presets/package.json
-# declares "@l.x/vitest-preset" (singular). pnpm fails. Rename to match.
+# Upstream bug at HEAD: workspace package naming mismatches.
+# Both jest-presets and vitest-presets are referenced unscoped but
+# declared as @l.x/{jest,vitest}-preset. Rename to match.
 RUN sed -i 's|"name": "@l\.x/vitest-preset"|"name": "vitest-presets"|' \
       config/vitest-presets/package.json 2>/dev/null || true
+RUN sed -i 's|"name": "@l\.x/jest-preset"|"name": "jest-presets"|' \
+      config/jest-presets/package.json 2>/dev/null || true
 
 # Corepack + pnpm + install web workspace only.
 RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
