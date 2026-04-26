@@ -25,9 +25,19 @@ export interface InteractiveToken {
 }
 
 // Zoo EVM — chainId 200200 (mainnet) / 200201 (testnet).
-// Upstream GraphQL schema doesn't yet have a Zoo enum; TokenCloud degrades
-// gracefully via useTokenPromoQuery. Trading routes through the gateway.
-const ZOO_EVM = GraphQLApi.Chain.UnknownChain
+// Liquid EVM — chainId 8675309 — regulated SecurityToken proxy host for the
+//   7 stocks (AAPL/MSFT/NVDA/TSLA/GOOGL/AMZN/META) and 7 private securities
+//   (OpenAI/SpaceX/Anthropic/Stripe/Databricks/xAI/Revolut). Liquidity gate
+//   enforces KYC + accreditation on every swap.
+//
+// Upstream PR (luxfi/exchange#fix/whitelabel-chain-enums) adds Chain.Zoo +
+// Chain.Liquid to the GraphQL enum. Until that lands, we fall back to
+// Chain.Ethereum so TokenCloud's useTokenPromoQuery resolves and the cloud
+// actually renders (UnknownChain caused the cloud to come up empty). Trading
+// itself never sees these enums — it routes through the gateway by chainId.
+const C = GraphQLApi.Chain as Record<string, GraphQLApi.Chain>
+const ZOO_EVM: GraphQLApi.Chain = C.Zoo ?? GraphQLApi.Chain.Ethereum
+const LIQUID_EVM: GraphQLApi.Chain = C.Liquid ?? GraphQLApi.Chain.Ethereum
 
 // ─── 14 native Zoo-chain assets (≥50%) ────────────────────────────────
 const NATIVE: InteractiveToken[] = [
@@ -81,14 +91,6 @@ const NATIVE: InteractiveToken[] = [
     chain: ZOO_EVM,
     color: '#FFFFFF',
     logoUrl: 'https://cdn.lux.network/bridge/currencies/zoo/zlux.svg',
-  },
-  {
-    name: 'Wrapped Solana',
-    symbol: 'WSOL',
-    address: '0x0000000000000000000000000000000000000000',
-    chain: ZOO_EVM,
-    color: '#9945FF',
-    logoUrl: 'https://assets.coingecko.com/coins/images/4128/small/solana.png',
   },
   {
     name: 'USD Coin',
@@ -166,7 +168,7 @@ const STOCKS: InteractiveToken[] = [
     name: 'Apple Inc',
     symbol: 'AAPL',
     address: '0x0000000000000000000000000000000000000000',
-    chain: ZOO_EVM,
+    chain: LIQUID_EVM,
     color: '#000000',
     logoUrl: 'https://logo.clearbit.com/apple.com',
   },
@@ -174,7 +176,7 @@ const STOCKS: InteractiveToken[] = [
     name: 'Microsoft Corp',
     symbol: 'MSFT',
     address: '0x0000000000000000000000000000000000000000',
-    chain: ZOO_EVM,
+    chain: LIQUID_EVM,
     color: '#00A4EF',
     logoUrl: 'https://logo.clearbit.com/microsoft.com',
   },
@@ -182,7 +184,7 @@ const STOCKS: InteractiveToken[] = [
     name: 'NVIDIA Corp',
     symbol: 'NVDA',
     address: '0x0000000000000000000000000000000000000000',
-    chain: ZOO_EVM,
+    chain: LIQUID_EVM,
     color: '#76B900',
     logoUrl: 'https://logo.clearbit.com/nvidia.com',
   },
@@ -190,7 +192,7 @@ const STOCKS: InteractiveToken[] = [
     name: 'Tesla Inc',
     symbol: 'TSLA',
     address: '0x0000000000000000000000000000000000000000',
-    chain: ZOO_EVM,
+    chain: LIQUID_EVM,
     color: '#CC0000',
     logoUrl: 'https://logo.clearbit.com/tesla.com',
   },
@@ -198,7 +200,7 @@ const STOCKS: InteractiveToken[] = [
     name: 'Alphabet Inc',
     symbol: 'GOOGL',
     address: '0x0000000000000000000000000000000000000000',
-    chain: ZOO_EVM,
+    chain: LIQUID_EVM,
     color: '#4285F4',
     logoUrl: 'https://logo.clearbit.com/google.com',
   },
@@ -206,7 +208,7 @@ const STOCKS: InteractiveToken[] = [
     name: 'Amazon.com Inc',
     symbol: 'AMZN',
     address: '0x0000000000000000000000000000000000000000',
-    chain: ZOO_EVM,
+    chain: LIQUID_EVM,
     color: '#FF9900',
     logoUrl: 'https://logo.clearbit.com/amazon.com',
   },
@@ -214,7 +216,7 @@ const STOCKS: InteractiveToken[] = [
     name: 'Meta Platforms',
     symbol: 'META',
     address: '0x0000000000000000000000000000000000000000',
-    chain: ZOO_EVM,
+    chain: LIQUID_EVM,
     color: '#1877F2',
     logoUrl: 'https://logo.clearbit.com/meta.com',
   },
@@ -226,7 +228,7 @@ const PRIVATE: InteractiveToken[] = [
     name: 'OpenAI',
     symbol: 'OPENAI',
     address: '0x0000000000000000000000000000000000000000',
-    chain: ZOO_EVM,
+    chain: LIQUID_EVM,
     color: '#10A37F',
     logoUrl: 'https://logo.clearbit.com/openai.com',
   },
@@ -234,7 +236,7 @@ const PRIVATE: InteractiveToken[] = [
     name: 'SpaceX',
     symbol: 'SPACEX',
     address: '0x0000000000000000000000000000000000000000',
-    chain: ZOO_EVM,
+    chain: LIQUID_EVM,
     color: '#000000',
     logoUrl: 'https://logo.clearbit.com/spacex.com',
   },
@@ -242,7 +244,7 @@ const PRIVATE: InteractiveToken[] = [
     name: 'Anthropic',
     symbol: 'ANTHROPIC',
     address: '0x0000000000000000000000000000000000000000',
-    chain: ZOO_EVM,
+    chain: LIQUID_EVM,
     color: '#D97757',
     logoUrl: 'https://logo.clearbit.com/anthropic.com',
   },
@@ -250,7 +252,7 @@ const PRIVATE: InteractiveToken[] = [
     name: 'Stripe',
     symbol: 'STRIPE',
     address: '0x0000000000000000000000000000000000000000',
-    chain: ZOO_EVM,
+    chain: LIQUID_EVM,
     color: '#635BFF',
     logoUrl: 'https://logo.clearbit.com/stripe.com',
   },
@@ -258,7 +260,7 @@ const PRIVATE: InteractiveToken[] = [
     name: 'Databricks',
     symbol: 'DATABRICKS',
     address: '0x0000000000000000000000000000000000000000',
-    chain: ZOO_EVM,
+    chain: LIQUID_EVM,
     color: '#FF3621',
     logoUrl: 'https://logo.clearbit.com/databricks.com',
   },
@@ -266,7 +268,7 @@ const PRIVATE: InteractiveToken[] = [
     name: 'xAI',
     symbol: 'XAI',
     address: '0x0000000000000000000000000000000000000000',
-    chain: ZOO_EVM,
+    chain: LIQUID_EVM,
     color: '#000000',
     logoUrl: 'https://logo.clearbit.com/x.ai',
   },
@@ -274,7 +276,7 @@ const PRIVATE: InteractiveToken[] = [
     name: 'Revolut',
     symbol: 'REVOLUT',
     address: '0x0000000000000000000000000000000000000000',
-    chain: ZOO_EVM,
+    chain: LIQUID_EVM,
     color: '#0075EB',
     logoUrl: 'https://logo.clearbit.com/revolut.com',
   },
