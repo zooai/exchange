@@ -18,7 +18,7 @@ WORKDIR /app
 # Pin UPSTREAM_REF to a commit on luxfi/exchange/main that includes
 # PR#23 (kill @hanzogui/react-native-reanimated fork, fix lxOrder
 # no-arg crash, rename vitest/jest-presets, env-driven graph + insights).
-ARG UPSTREAM_REF=21473fd88e35397d05f2361f531a9e057aa8b3d2
+ARG UPSTREAM_REF=d984f45166664ef01671a6364bb4c7e59092b295
 RUN if git ls-remote --heads --tags https://github.com/luxfi/exchange.git "${UPSTREAM_REF}" | grep -q .; then \
       git clone --depth=1 --branch="${UPSTREAM_REF}" \
         https://github.com/luxfi/exchange.git .; \
