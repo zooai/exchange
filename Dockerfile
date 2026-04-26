@@ -18,7 +18,7 @@ WORKDIR /app
 # Pin UPSTREAM_REF to a commit on luxfi/exchange/main that includes
 # PR#23 (kill @hanzogui/react-native-reanimated fork, fix lxOrder
 # no-arg crash, rename vitest/jest-presets, env-driven graph + insights).
-ARG UPSTREAM_REF=01229f29cd431b610021169c642e9ad97fe44e5e
+ARG UPSTREAM_REF=dc167b56ddbd25eb15ed56909e9ac74a274b6615
 RUN if git ls-remote --heads --tags https://github.com/luxfi/exchange.git "${UPSTREAM_REF}" | grep -q .; then \
       git clone --depth=1 --branch="${UPSTREAM_REF}" \
         https://github.com/luxfi/exchange.git .; \
@@ -61,19 +61,6 @@ RUN rm -rf apps/mobile apps/extension
 RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
 RUN pnpm install --no-frozen-lockfile --ignore-scripts --filter "@l.x/web..."
 
-# Generated artifacts the upstream tree expects but doesn't ship in git.
-RUN mkdir -p node_modules/@rive-app/canvas apps/web/public/rive && \
-    touch node_modules/@rive-app/canvas/rive.wasm \
-          apps/web/public/rive/rive.wasm
-RUN cd pkgs/api && pnpm exec openapi \
-      --input ./src/clients/trading/api.json \
-      --output ./src/clients/trading/__generated__ \
-      --useOptions --exportServices true --exportModels true \
-    || (mkdir -p src/clients/trading/__generated__/{models,core,services} && \
-        echo 'export {}' > src/clients/trading/__generated__/index.ts)
-RUN mkdir -p pkgs/lx/src/abis/types/v3 && \
-    echo 'export {}' > pkgs/lx/src/abis/types/v3/index.ts
-RUN cd apps/web && pnpm exec node scripts/compile-ajv-validators.js || true
 
 # Build.
 ENV NEXT_TELEMETRY_DISABLED=1 \
