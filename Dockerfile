@@ -77,6 +77,15 @@ RUN for d in tools/uniswap-nx apps/cli apps/extension apps/mobile packages/trans
 # Bundle react-native-reanimated instead of externalizing (Rollup fix).
 RUN sed -i '/\/react-native-reanimated\/,$/d' apps/web/vite.config.mts
 
+# Re-transpile @hanzogui/react-native-reanimated/lib/**/*.js with esbuild.
+# The published fork ships raw JSX in .js files (packaging bug — lib/module
+# was meant to be transpiled by the package's build but wasn't). Rollup/Vite
+# commonjs-resolver fails 'Expression expected'. Transpile in-place with
+# esbuild's JS API in ONE node process. Same fix as liquidityio/swap.
+COPY scripts/transpile-rna.js /tmp/transpile-rna.js
+RUN mkdir -p /tmp/esbuild && (cd /tmp/esbuild && npm install --no-save --no-audit --no-fund esbuild@0.25.0) \
+    && NODE_PATH=/tmp/esbuild/node_modules node /tmp/transpile-rna.js
+
 # Upstream bug fix: lxOrderSwapTxAndGasInfoService re-exports
 # createClassicSwapTxAndGasInfoService which the consumer calls with no
 # args → ctx.gasStrategy destructure crashes → React #185 loop.
