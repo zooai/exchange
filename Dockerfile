@@ -77,6 +77,20 @@ RUN for d in tools/uniswap-nx apps/cli apps/extension apps/mobile packages/trans
 # Bundle react-native-reanimated instead of externalizing (Rollup fix).
 RUN sed -i '/\/react-native-reanimated\/,$/d' apps/web/vite.config.mts
 
+# Upstream bug fix: lxOrderSwapTxAndGasInfoService re-exports
+# createClassicSwapTxAndGasInfoService which the consumer calls with no
+# args → ctx.gasStrategy destructure crashes → React #185 loop.
+# Replace with a real no-op service factory.
+RUN cat > pkgs/lx/src/features/transactions/swap/review/services/swapTxAndGasInfoService/lx/lxOrderSwapTxAndGasInfoService.ts <<'PATCH_EOF'
+export function createLXSwapTxAndGasInfoService() {
+  return {
+    getSwapTxAndGasInfo: async () => {
+      throw new Error('LX order swap not implemented')
+    },
+  }
+}
+PATCH_EOF
+
 # Gitignored types + ABIs + AJV validators (web-only).
 RUN cd pkgs/api && pnpm exec openapi \
       --input ./src/clients/trading/api.json \
