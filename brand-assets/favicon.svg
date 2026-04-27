@@ -1,38 +1,6 @@
-<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-  <!-- Zoo brand mark: three-circle CMYK Venn diagram, full color.
-       Same motif as logo.svg but scaled to fill the favicon viewport so
-       the colors remain readable at 16x16 / 32x32. -->
-  <defs>
-    <clipPath id="favClip">
-      <circle cx="512" cy="511" r="500"/>
-    </clipPath>
-    <clipPath id="favYellow">
-      <circle cx="512" cy="250" r="430"/>
-    </clipPath>
-    <clipPath id="favMagenta">
-      <circle cx="240" cy="670" r="430"/>
-    </clipPath>
-    <clipPath id="favCyan">
-      <circle cx="784" cy="670" r="430"/>
-    </clipPath>
-  </defs>
-  <g clip-path="url(#favClip)">
-    <circle cx="512" cy="250" r="430" fill="#FCF006"/>
-    <circle cx="240" cy="670" r="430" fill="#EA018E"/>
-    <circle cx="784" cy="670" r="430" fill="#01ACF1"/>
-    <g clip-path="url(#favYellow)">
-      <circle cx="240" cy="670" r="430" fill="#ED1C24"/>
-    </g>
-    <g clip-path="url(#favYellow)">
-      <circle cx="784" cy="670" r="430" fill="#00A652"/>
-    </g>
-    <g clip-path="url(#favMagenta)">
-      <circle cx="784" cy="670" r="430" fill="#2E3192"/>
-    </g>
-    <g clip-path="url(#favYellow)">
-      <g clip-path="url(#favMagenta)">
-        <circle cx="784" cy="670" r="430" fill="#000000"/>
-      </g>
-    </g>
-  </g>
-</svg>
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+    <rect width="64" height="64" rx="8" fill="#000000"/>
+    <circle cx="32" cy="22" r="12" fill="#00A652"/>
+    <circle cx="21" cy="40" r="12" fill="#ED1C24"/>
+    <circle cx="43" cy="40" r="12" fill="#2E3192"/>
+  </svg>

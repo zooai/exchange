@@ -1,39 +1,38 @@
-<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-  <!-- Zoo wordmark: three-circle CMYK mark + "Zoo" text, horizontal lockup. -->
-  <defs>
-    <clipPath id="wmClip">
-      <circle cx="200" cy="512" r="180"/>
-    </clipPath>
-    <clipPath id="wmYellow">
-      <circle cx="200" cy="420" r="155"/>
-    </clipPath>
-    <clipPath id="wmMagenta">
-      <circle cx="105" cy="568" r="155"/>
-    </clipPath>
-    <clipPath id="wmCyan">
-      <circle cx="295" cy="568" r="155"/>
-    </clipPath>
-  </defs>
-  <g clip-path="url(#wmClip)">
-    <circle cx="200" cy="420" r="155" fill="#FCF006"/>
-    <circle cx="105" cy="568" r="155" fill="#EA018E"/>
-    <circle cx="295" cy="568" r="155" fill="#01ACF1"/>
-    <g clip-path="url(#wmYellow)">
-      <circle cx="105" cy="568" r="155" fill="#ED1C24"/>
-    </g>
-    <g clip-path="url(#wmYellow)">
-      <circle cx="295" cy="568" r="155" fill="#00A652"/>
-    </g>
-    <g clip-path="url(#wmMagenta)">
-      <circle cx="295" cy="568" r="155" fill="#2E3192"/>
-    </g>
-    <g clip-path="url(#wmYellow)">
-      <g clip-path="url(#wmMagenta)">
-        <circle cx="295" cy="568" r="155" fill="#000000"/>
+<svg width="1280" height="320" viewBox="0 0 1280 320" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <clipPath id="wmOuter">
+        <circle cx="160" cy="160" r="128"/>
+      </clipPath>
+      <clipPath id="wmGreenClip">
+        <circle cx="161" cy="93" r="111"/>
+      </clipPath>
+      <clipPath id="wmRedClip">
+        <circle cx="91" cy="200" r="111"/>
+      </clipPath>
+      <clipPath id="wmBlueClip">
+        <circle cx="223" cy="200" r="111"/>
+      </clipPath>
+    </defs>
+    <g clip-path="url(#wmOuter)">
+      <circle cx="161" cy="93" r="111" fill="#00A652"/>
+      <circle cx="91" cy="200" r="111" fill="#ED1C24"/>
+      <circle cx="223" cy="200" r="111" fill="#2E3192"/>
+      <g clip-path="url(#wmGreenClip)">
+        <circle cx="91" cy="200" r="111" fill="#FCF006"/>
+      </g>
+      <g clip-path="url(#wmGreenClip)">
+        <circle cx="223" cy="200" r="111" fill="#01ACF1"/>
+      </g>
+      <g clip-path="url(#wmRedClip)">
+        <circle cx="223" cy="200" r="111" fill="#EA018E"/>
+      </g>
+      <g clip-path="url(#wmGreenClip)">
+        <g clip-path="url(#wmRedClip)">
+          <circle cx="223" cy="200" r="111" fill="#FFFFFF"/>
+        </g>
       </g>
     </g>
-  </g>
-  <g fill="currentColor" font-family="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="320" letter-spacing="-12">
-    <text x="430" y="620">Zoo</text>
-  </g>
-</svg>
+    <g fill="currentColor" font-family="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="220" letter-spacing="-8">
+      <text x="340" y="232">Zoo</text>
+    </g>
+  </svg>
