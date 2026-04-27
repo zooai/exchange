@@ -37,7 +37,13 @@ RUN mkdir -p /tmp/zb && cd /tmp/zb && \
     (npm pack @zooai/brand@latest && tar -xzf zooai-brand-*.tgz --strip-components=1)
 RUN cp /tmp/zb/brand.json apps/web/public/brand.json
 
-# Zoo logo marks — bundled in brand-assets/ since @zooai/logo only ships dist.
+# Zoo logo marks — pull canonical SVGs from @zooai/logo dist; brand-assets
+# is a fallback for offline builds and lockstep wordmark composition.
+RUN mkdir -p /tmp/zl && cd /tmp/zl && \
+    (curl -sL "$(npm pack @zooai/logo@latest 2>/dev/null | tail -1 || echo /dev/null)" | tar -xz --strip-components=1 -C . 2>/dev/null || \
+     (npm pack @zooai/logo@latest && tar -xzf zooai-logo-*.tgz --strip-components=1)) || true
+RUN if [ -f /tmp/zl/dist/zoo-logo.svg    ]; then cp /tmp/zl/dist/zoo-logo.svg    apps/web/public/logo.svg;    fi
+RUN if [ -f /tmp/zl/dist/zoo-favicon.svg ]; then cp /tmp/zl/dist/zoo-favicon.svg apps/web/public/favicon.svg; fi
 COPY brand-assets/logo.svg     apps/web/public/logo.svg
 COPY brand-assets/favicon.svg  apps/web/public/favicon.svg
 COPY brand-assets/wordmark.svg apps/web/public/wordmark.svg
