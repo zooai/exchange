@@ -93,7 +93,10 @@
     "wss://*.api.lux.network",
     "wss://*.gateway.lux.exchange",
     "wss://relay.walletconnect.com",
-    "wss://relay.walletconnect.org"
+    "wss://relay.walletconnect.org",
+    "wss://nbstream.binance.com",
+    "wss://*.binance.com",
+    "wss://*.bnbchain.org"
   ],
   "workerSrc": ["'self'", "blob:"]
 }
