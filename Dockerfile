@@ -60,6 +60,9 @@ RUN rm -rf apps/mobile apps/extension
 # Corepack + pnpm + filtered install.
 RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
 RUN pnpm install --no-frozen-lockfile --ignore-scripts --filter "@l.x/web..."
+# postinstall is skipped by --ignore-scripts; run patcher explicitly so the
+# upstream 7.0.0 publish (missing dist/, legacy Hanzogui* names) gets repaired.
+RUN node scripts/patch-hanzogui-exports.cjs
 
 
 # Build.
