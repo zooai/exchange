@@ -18,7 +18,7 @@ WORKDIR /app
 # Pin UPSTREAM_REF to a commit on luxfi/exchange/main that includes
 # PR#23 (kill @hanzogui/react-native-reanimated fork, fix lxOrder
 # no-arg crash, rename vitest/jest-presets, env-driven graph + insights).
-ARG UPSTREAM_REF=6668c75e4c
+ARG UPSTREAM_REF=77de1b3c98
 RUN if git ls-remote --heads --tags https://github.com/luxfi/exchange.git "${UPSTREAM_REF}" | grep -q .; then \
       git clone --depth=1 --branch="${UPSTREAM_REF}" \
         https://github.com/luxfi/exchange.git .; \
@@ -54,11 +54,11 @@ COPY csp.json apps/web/public/csp.json
 # Zoo featured tokens for the landing-page token cloud.
 COPY featured-tokens.ts apps/web/src/pages/Landing/assets/approvedTokens.ts
 
-# Title rewrite. Upstream title was scrubbed Uniswap → Lux Exchange in PR#48
-# brand-bleed pass; match both for resilience across UPSTREAM_REF bumps.
+# Title is owned by runtime brand.json (loaded before first paint). No
+# hardcoded sed-rewrite. Per-deployment ConfigMap sets the real title.
+# OG description still gets scrubbed because it's parsed by social crawlers
+# that don't execute JS.
 RUN sed -i \
-      -e 's|<title>Uniswap Interface</title>|<title>Zoo Exchange \| Trade</title>|' \
-      -e 's|<title>Lux Exchange</title>|<title>Zoo Exchange \| Trade</title>|' \
       -e 's|content="Multi-chain decentralized exchange powered by Lux Network"|content="Trade ZOO and every token on Zoo Network."|' \
       apps/web/index.html
 
