@@ -15,10 +15,9 @@ FROM node:22-alpine AS spa
 RUN apk add --no-cache git python3 make g++ curl
 WORKDIR /app
 
-# Pin UPSTREAM_REF to a commit on luxfi/exchange/main that includes
-# PR#23 (kill @hanzogui/react-native-reanimated fork, fix lxOrder
-# no-arg crash, rename vitest/jest-presets, env-driven graph + insights).
-ARG UPSTREAM_REF=9a9efe2edd
+# Pin UPSTREAM_REF to a commit on luxfi/exchange/main.
+# v5.147.4 = bridged tokens display bare symbols (ETH/BTC/USDC, no L-prefix).
+ARG UPSTREAM_REF=2ef039d4415e4f2ff391274f54ed00f9c12fe30b
 RUN if git ls-remote --heads --tags https://github.com/luxfi/exchange.git "${UPSTREAM_REF}" | grep -q .; then \
       git clone --depth=1 --branch="${UPSTREAM_REF}" \
         https://github.com/luxfi/exchange.git .; \
