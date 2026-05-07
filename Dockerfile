@@ -17,7 +17,7 @@ WORKDIR /app
 
 # Pin UPSTREAM_REF to a commit on luxfi/exchange/main.
 # v5.147.4 = bridged tokens display bare symbols (ETH/BTC/USDC, no L-prefix).
-ARG UPSTREAM_REF=8e29670051dc11a0c4590ad2343edea38ef19672
+ARG UPSTREAM_REF=6e801eac54
 RUN if git ls-remote --heads --tags https://github.com/luxfi/exchange.git "${UPSTREAM_REF}" | grep -q .; then \
       git clone --depth=1 --branch="${UPSTREAM_REF}" \
         https://github.com/luxfi/exchange.git .; \
