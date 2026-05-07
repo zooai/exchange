@@ -41,28 +41,27 @@ createRoot(document.getElementById('root')!).render(
     // the router based on active chain id.
     dex={{ kind: 'gateway', url: 'https://dex.lux.network' }}
 
-    // ─── Regulated-asset gate (Liquidity) ───────────────────────────
-    // Stocks + private securities are BOTH regulated. Every trade
-    // routes through the Liquidity provider on Liquid EVM — KYC +
-    // accreditation enforced. Each Liquid env has its own adapter +
-    // onboarding host (dev/test/prod are separate ATS deployments).
+    // ─── Regulated-asset gate ───────────────────────────────────────
+    // Stocks and private secondaries are regulated. Each chain has its own
+    // adapter + KYC onboarding host. Adapter addresses are populated when
+    // the regulated stack deploys to that chain.
     provider={{
-      name: 'Liquidity',
+      name: 'Regulated Provider',
       endpoints: {
         [LIQUID_MAINNET]: {
           adapter:       '0x0000000000000000000000000000000000000000', // TODO: prod IRegulatedProvider
-          router:        '0x0000000000000000000000000000000000000000', // TODO: Lux ProviderRouter (prod)
-          onboardingUrl: 'https://id.satschel.com/onboarding',
+          router:        '0x0000000000000000000000000000000000000000', // TODO: ProviderRouter (prod)
+          onboardingUrl: 'https://id.lux.network/onboarding',
         },
         [LIQUID_TESTNET]: {
           adapter:       '0x0000000000000000000000000000000000000000', // TODO: testnet IRegulatedProvider
-          router:        '0x0000000000000000000000000000000000000000', // TODO: Lux ProviderRouter (testnet)
-          onboardingUrl: 'https://id.test.satschel.com/onboarding',
+          router:        '0x0000000000000000000000000000000000000000', // TODO: ProviderRouter (testnet)
+          onboardingUrl: 'https://id.lux-test.network/onboarding',
         },
         [LIQUID_DEVNET]: {
           adapter:       '0x0000000000000000000000000000000000000000', // TODO: devnet IRegulatedProvider
-          router:        '0x0000000000000000000000000000000000000000', // TODO: Lux ProviderRouter (devnet)
-          onboardingUrl: 'https://id.dev.satschel.com/onboarding',
+          router:        '0x0000000000000000000000000000000000000000', // TODO: ProviderRouter (devnet)
+          onboardingUrl: 'https://id.lux-dev.network/onboarding',
         },
       },
     }}
@@ -97,13 +96,14 @@ createRoot(document.getElementById('root')!).render(
     }}
 
     // ─── Featured tokens on the landing page ────────────────────────
-    // 50% public stocks / 25% private securities / 25% native Zoo.
-    // Stocks + private are BOTH regulated — every trade gates through
-    // the Liquidity provider. Zoo native tokens are the Z-prefix Bridge
-    // assets from ~/work/lux/bridge (canonical, deterministic across
-    // mainnet/testnet/devnet). Full 28-token list in featured-tokens.ts.
+    // 50% public stocks / 25% private secondaries / 25% native Zoo.
+    // Stocks + private secondaries are BOTH regulated — every trade gates
+    // through the configured regulated provider (KYC + accreditation). Zoo
+    // native tokens are the Z-prefix Bridge assets from ~/work/lux/bridge
+    // (canonical, deterministic across mainnet/testnet/devnet). Full 28-token
+    // list in featured-tokens.ts.
     featured={[
-      // Stocks (50%) — regulated, Liquidity-gated (Liquid EVM Mainnet)
+      // Stocks (50%) — regulated, provider-gated (Liquid EVM Mainnet)
       { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'AAPL',  name: 'Apple Inc',  color: '#000000', regulated: true },
       { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'MSFT',  name: 'Microsoft',  color: '#00A4EF', regulated: true },
       { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'NVDA',  name: 'NVIDIA',     color: '#76B900', regulated: true },
@@ -111,7 +111,7 @@ createRoot(document.getElementById('root')!).render(
       { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'GOOGL', name: 'Alphabet',   color: '#4285F4', regulated: true },
       { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'AMZN',  name: 'Amazon',     color: '#FF9900', regulated: true },
       { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'META',  name: 'Meta',       color: '#1877F2', regulated: true },
-      // Private (25%) — regulated, Liquidity-gated
+      // Private secondaries (25%) — regulated, provider-gated
       { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'OPENAI',    name: 'OpenAI',    color: '#10A37F', regulated: true },
       { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'ANTHROPIC', name: 'Anthropic', color: '#D97757', regulated: true },
       { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'SPACEX',    name: 'SpaceX',    color: '#000000', regulated: true },
