@@ -1,18 +1,32 @@
-import { ExpoConfig } from 'expo/config'
+// Zoo Exchange mobile — declarative Expo config.
+// Tenant identity (name, slug, scheme, bundle id) comes from @zooai/brand.
+import brand from '@zooai/brand'
 
-const config: ExpoConfig = {
-  name: 'Lux',
-  slug: 'luxmobile',
-  scheme: 'lux',
-  owner: 'lux',
-  extra: {
-    eas: {
-      projectId: 'f1be3813-43d7-49ac-a792-7f42cf8500f5',
+export default {
+  expo: {
+    name: brand.name,
+    slug: brand.slug,
+    scheme: brand.scheme,
+    owner: brand.expoOwner,
+    version: process.env.APP_VERSION || '0.1.0',
+    orientation: 'portrait',
+    icon: brand.iconUrl,
+    splash: {
+      image: brand.splashUrl,
+      resizeMode: 'contain',
+      backgroundColor: brand.primaryColor,
     },
-  },
-  experiments: {
-    buildCacheProvider: 'eas',
+    ios: {
+      bundleIdentifier: brand.iosBundleId,
+      supportsTablet: true,
+    },
+    android: {
+      package: brand.androidPackage,
+      adaptiveIcon: {
+        foregroundImage: brand.iconUrl,
+        backgroundColor: brand.primaryColor,
+      },
+    },
+    plugins: ['expo-router'],
   },
 }
-
-export default config
