@@ -4,17 +4,18 @@
 // Copyright (c) 2025-2026 Zoo Labs Foundation Inc. — BSD-3-Clause.
 
 import { createRoot } from 'react-dom/client'
-import Exchange, { canonicalChains, zooMainnet } from '@luxfi/exchange'
+import Exchange, {
+  canonicalChains,
+  zooMainnet,
+  LIQUID_MAINNET_ID,
+  LIQUID_TESTNET_ID,
+  LIQUID_DEVNET_ID,
+} from '@luxfi/exchange'
 import brand from '@zooai/brand'
 import Logo  from '@zooai/logo'
 import en from '@zooai/brand/translations/en-US.json'
 import es from '@zooai/brand/translations/es-ES.json'
 import zh from '@zooai/brand/translations/zh-CN.json'
-
-// Canonical chain IDs used by the provider endpoint map below.
-const LIQUID_MAINNET = 8675309
-const LIQUID_TESTNET = 8675310
-const LIQUID_DEVNET  = 8675311
 
 createRoot(document.getElementById('root')!).render(
   <Exchange
@@ -41,26 +42,26 @@ createRoot(document.getElementById('root')!).render(
     // the router based on active chain id.
     dex={{ kind: 'gateway', url: 'https://dex.lux.network' }}
 
-    // ─── Regulated-asset gate ───────────────────────────────────────
-    // Stocks and private secondaries are regulated. Each chain has its own
-    // adapter + KYC onboarding host. Adapter addresses are populated when
-    // the regulated stack deploys to that chain.
+    // ─── Regulated securities gate ──────────────────────────────────
+    // Stocks + private secondaries are regulated. Each Liquid EVM env
+    // has its own provider adapter + KYC onboarding host. Adapter
+    // addresses are populated by the regulated stack once deployed.
     provider={{
-      name: 'Regulated Provider',
+      name: 'Regulated Securities Provider',
       endpoints: {
-        [LIQUID_MAINNET]: {
-          adapter:       '0x0000000000000000000000000000000000000000', // TODO: prod IRegulatedProvider
-          router:        '0x0000000000000000000000000000000000000000', // TODO: ProviderRouter (prod)
+        [LIQUID_MAINNET_ID]: {
+          adapter:       '0x0000000000000000000000000000000000000000',
+          router:        '0x0000000000000000000000000000000000000000',
           onboardingUrl: 'https://id.lux.network/onboarding',
         },
-        [LIQUID_TESTNET]: {
-          adapter:       '0x0000000000000000000000000000000000000000', // TODO: testnet IRegulatedProvider
-          router:        '0x0000000000000000000000000000000000000000', // TODO: ProviderRouter (testnet)
+        [LIQUID_TESTNET_ID]: {
+          adapter:       '0x0000000000000000000000000000000000000000',
+          router:        '0x0000000000000000000000000000000000000000',
           onboardingUrl: 'https://id.lux-test.network/onboarding',
         },
-        [LIQUID_DEVNET]: {
-          adapter:       '0x0000000000000000000000000000000000000000', // TODO: devnet IRegulatedProvider
-          router:        '0x0000000000000000000000000000000000000000', // TODO: ProviderRouter (devnet)
+        [LIQUID_DEVNET_ID]: {
+          adapter:       '0x0000000000000000000000000000000000000000',
+          router:        '0x0000000000000000000000000000000000000000',
           onboardingUrl: 'https://id.lux-dev.network/onboarding',
         },
       },
@@ -97,25 +98,25 @@ createRoot(document.getElementById('root')!).render(
 
     // ─── Featured tokens on the landing page ────────────────────────
     // 50% public stocks / 25% private secondaries / 25% native Zoo.
-    // Stocks + private secondaries are BOTH regulated — every trade gates
-    // through the configured regulated provider (KYC + accreditation). Zoo
-    // native tokens are the Z-prefix Bridge assets from ~/work/lux/bridge
-    // (canonical, deterministic across mainnet/testnet/devnet). Full 28-token
-    // list in featured-tokens.ts.
+    // Stocks + private secondaries are BOTH regulated — every trade
+    // gates through the configured regulated securities provider (KYC
+    // + accreditation). Zoo native tokens are the Z-prefix Bridge
+    // assets from ~/work/lux/bridge (canonical, deterministic across
+    // mainnet/testnet/devnet). Full 28-token list in featured-tokens.ts.
     featured={[
       // Stocks (50%) — regulated, provider-gated (Liquid EVM Mainnet)
-      { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'AAPL',  name: 'Apple Inc',  color: '#000000', regulated: true },
-      { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'MSFT',  name: 'Microsoft',  color: '#00A4EF', regulated: true },
-      { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'NVDA',  name: 'NVIDIA',     color: '#76B900', regulated: true },
-      { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'TSLA',  name: 'Tesla',      color: '#CC0000', regulated: true },
-      { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'GOOGL', name: 'Alphabet',   color: '#4285F4', regulated: true },
-      { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'AMZN',  name: 'Amazon',     color: '#FF9900', regulated: true },
-      { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'META',  name: 'Meta',       color: '#1877F2', regulated: true },
+      { chainId: LIQUID_MAINNET_ID, address: '0x0000000000000000000000000000000000000000', symbol: 'AAPL',  name: 'Apple Inc',  color: '#000000', regulated: true },
+      { chainId: LIQUID_MAINNET_ID, address: '0x0000000000000000000000000000000000000000', symbol: 'MSFT',  name: 'Microsoft',  color: '#00A4EF', regulated: true },
+      { chainId: LIQUID_MAINNET_ID, address: '0x0000000000000000000000000000000000000000', symbol: 'NVDA',  name: 'NVIDIA',     color: '#76B900', regulated: true },
+      { chainId: LIQUID_MAINNET_ID, address: '0x0000000000000000000000000000000000000000', symbol: 'TSLA',  name: 'Tesla',      color: '#CC0000', regulated: true },
+      { chainId: LIQUID_MAINNET_ID, address: '0x0000000000000000000000000000000000000000', symbol: 'GOOGL', name: 'Alphabet',   color: '#4285F4', regulated: true },
+      { chainId: LIQUID_MAINNET_ID, address: '0x0000000000000000000000000000000000000000', symbol: 'AMZN',  name: 'Amazon',     color: '#FF9900', regulated: true },
+      { chainId: LIQUID_MAINNET_ID, address: '0x0000000000000000000000000000000000000000', symbol: 'META',  name: 'Meta',       color: '#1877F2', regulated: true },
       // Private secondaries (25%) — regulated, provider-gated
-      { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'OPENAI',    name: 'OpenAI',    color: '#10A37F', regulated: true },
-      { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'ANTHROPIC', name: 'Anthropic', color: '#D97757', regulated: true },
-      { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'SPACEX',    name: 'SpaceX',    color: '#000000', regulated: true },
-      { chainId: LIQUID_MAINNET, address: '0x0000000000000000000000000000000000000000', symbol: 'STRIPE',    name: 'Stripe',    color: '#635BFF', regulated: true },
+      { chainId: LIQUID_MAINNET_ID, address: '0x0000000000000000000000000000000000000000', symbol: 'OPENAI',    name: 'OpenAI',    color: '#10A37F', regulated: true },
+      { chainId: LIQUID_MAINNET_ID, address: '0x0000000000000000000000000000000000000000', symbol: 'ANTHROPIC', name: 'Anthropic', color: '#D97757', regulated: true },
+      { chainId: LIQUID_MAINNET_ID, address: '0x0000000000000000000000000000000000000000', symbol: 'SPACEX',    name: 'SpaceX',    color: '#000000', regulated: true },
+      { chainId: LIQUID_MAINNET_ID, address: '0x0000000000000000000000000000000000000000', symbol: 'STRIPE',    name: 'Stripe',    color: '#635BFF', regulated: true },
       // Native Zoo (25%) — canonical Zoo Bridge tokens on Zoo Mainnet.
       // Source of truth: ~/work/lux/bridge (Teleport wrapped-asset registry).
       { chainId: 200200, address: 'native',                                      symbol: 'ZOO',  name: 'Zoo',        color: '#000000' },

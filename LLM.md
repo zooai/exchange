@@ -25,7 +25,7 @@ createRoot(document.getElementById('root')!).render(
     {...brand} logo={Logo}
     chains={canonicalChains}  defaultChain={zooMainnet}
     dex={{ kind: 'gateway', url: 'https://dex.lux.network' }}
-    provider={{ /* per-env Liquidity endpoints */ }}
+    provider={{ /* per-env regulated provider endpoints */ }}
     auth={{ provider: 'iam', issuer: 'https://iam.zoo.network', clientId: 'zoo-exchange', idHost: 'https://zoolabs.id' }}
     kms={{  url: 'https://kms.zoo.network' }}
     i18n={{ 'en-US': en, /* … */ }}
@@ -68,7 +68,7 @@ No `src/`, `pkgs/`, `contracts/`, `subgraphs/`, `deploy/`, `config/`, or `tools/
 | canonical chain defs (lux/hanzo/zoo/liquid × 3 envs) | `@luxfi/exchange` | `chains={canonicalChains}` |
 | Exchange App + SDK + providers + router + wagmi + `@hanzo/gui` bones | `@luxfi/exchange` | default import |
 | DEX backend (layered: precompile → V3 → V2 → Warp) | `main.tsx` `dex` prop | `{ kind: 'gateway', url }` |
-| regulated provider (Liquidity, per-env) | `main.tsx` `provider` prop | `{ name, endpoints: {…} }` |
+| regulated provider (per-env) | `main.tsx` `provider` prop | `{ name, endpoints: {…} }` |
 | IAM login (iam.zoo.network / zoolabs.id) | `main.tsx` `auth` prop | `{ provider, issuer, clientId, idHost }` |
 | KMS (kms.zoo.network) | `main.tsx` `kms` prop | `{ url }` |
 | feature toggles | `main.tsx` `features` prop | `{ swap, pool, nft, … }` |
@@ -84,7 +84,7 @@ No `src/`, `pkgs/`, `contracts/`, `subgraphs/`, `deploy/`, `config/`, or `tools/
 | Zoo Testnet | 200201 | `https://api.zoo-test.network/rpc` |
 | Zoo Devnet | 200202 | `https://api.zoo-dev.network/rpc` |
 
-Each bridged to Lux (96369/96368/96370), Hanzo (36963/36964/36965), and Liquid EVM (8675309/8675310/8675311) via Lux Warp + MPC threshold signatures (see `~/work/lux/bridge`). Regulated digital-securities flow through the Liquidity provider gate on Liquid EVM.
+Each bridged to Lux (96369/96368/96370), Hanzo (36963/36964/36965), and Liquid EVM (8675309/8675310/8675311) via Lux Warp + MPC threshold signatures (see `~/work/lux/bridge`). Regulated digital-securities flow through the configured regulated provider gate on Liquid EVM.
 
 ## Canonical Zoo Bridge tokens (source of truth: `~/work/lux/bridge`)
 
@@ -135,17 +135,17 @@ All CREATE2-deterministic — same addresses across Zoo mainnet/testnet/devnet.
 
 Advanced apps can bypass gateway and use explicit `{ kind: 'layered', layers: [...] }` to pin a specific fallback order.
 
-## Regulated-asset gate (Liquidity) — per-env endpoints
+## Regulated-asset gate — per-env endpoints
 
-Stocks (AAPL, MSFT, NVDA, TSLA, GOOGL, AMZN, META) + private securities (OpenAI, Anthropic, SpaceX, Stripe) are **BOTH** regulated. Each trade routes through the Liquidity provider on Liquid EVM — KYC + accreditation enforced. Each Liquid env has its own ATS deployment with distinct adapter/router contracts + onboarding host:
+Stocks (AAPL, MSFT, NVDA, TSLA, GOOGL, AMZN, META) + private secondaries (OpenAI, Anthropic, SpaceX, Stripe) are **BOTH** regulated. Each trade routes through the configured regulated provider on Liquid EVM — KYC + accreditation enforced. Each Liquid EVM env has its own provider deployment with distinct adapter/router contracts + onboarding host:
 
-| Liquid chain | chainId | onboarding |
+| Liquid EVM env | chainId | onboarding (jurisdiction-neutral default) |
 |---|---|---|
-| Liquid Mainnet | 8675309 | `https://id.satschel.com/onboarding` |
-| Liquid Testnet | 8675310 | `https://id.test.satschel.com/onboarding` |
-| Liquid Devnet | 8675311 | `https://id.dev.satschel.com/onboarding` |
+| Mainnet | 8675309 | `https://id.lux.network/onboarding` |
+| Testnet | 8675310 | `https://id.lux-test.network/onboarding` |
+| Devnet | 8675311 | `https://id.lux-dev.network/onboarding` |
 
-Declared in `main.tsx` as `provider={{ name: 'Liquidity', endpoints: { [chainId]: { adapter, router, onboardingUrl }, … } }}`.
+Declared in `main.tsx` as `provider={{ name: 'Regulated Securities Provider', endpoints: { [chainId]: { adapter, router, onboardingUrl }, … } }}`.
 
 ## Featured tokens — 50% stocks / 25% private / 25% native Zoo
 
@@ -160,7 +160,7 @@ Declared in `main.tsx` as `provider={{ name: 'Liquidity', endpoints: { [chainId]
 Cross-chain via [`~/work/lux/bridge`](https://github.com/luxfi/bridge) — MPC 2-of-3 threshold custody, Warp cross-chain messaging, and 15+ source chain integrations:
 - **Zoo ↔ Lux**: native Warp (sub-second finality, shared quantum finality via Q-Chain)
 - **Zoo ↔ Hanzo**: Warp (AI-chain interop)
-- **Zoo ↔ Liquid EVM**: Warp + KYC attestation passthrough (regulated assets)
+- **Zoo ↔ Liquid EVM**: Warp + KYC attestation passthrough (regulated digital securities chain)
 - **Zoo ↔ external EVMs**: `dex.lux.network` gateway (Circle CCTP, LayerZero, Wormhole, etc.)
 
 Zoo-side bridge contracts deployed in `~/work/zoo/contracts` via `broadcast/DeployZooBridge.s.sol/200200/`, `200201/`, `200202/`.
