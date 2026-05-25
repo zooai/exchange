@@ -84,7 +84,7 @@ No `src/`, `pkgs/`, `contracts/`, `subgraphs/`, `deploy/`, `config/`, or `tools/
 | Zoo Testnet | 200201 | `https://api.zoo-test.network/rpc` |
 | Zoo Devnet | 200202 | `https://api.zoo-dev.network/rpc` |
 
-Each bridged to Lux (96369/96368/96370), Hanzo (36963/36964/36965), and Liquid EVM (8675309/8675310/8675311) via Lux Warp + MPC threshold signatures (see `~/work/lux/bridge`). Regulated digital-securities flow through the configured regulated provider gate on Liquid EVM.
+Each bridged to Lux (96369/96368/96370), Hanzo (36963/36964/36965), and regulated EVM (your-chain-ids) via Lux Warp + MPC threshold signatures (see `~/work/lux/bridge`). Regulated digital-securities flow through the configured regulated provider gate.
 
 ## Canonical Zoo Bridge tokens (source of truth: `~/work/lux/bridge`)
 
@@ -137,9 +137,9 @@ Advanced apps can bypass gateway and use explicit `{ kind: 'layered', layers: [.
 
 ## Regulated-asset gate — per-env endpoints
 
-Stocks (AAPL, MSFT, NVDA, TSLA, GOOGL, AMZN, META) + private secondaries (OpenAI, Anthropic, SpaceX, Stripe) are **BOTH** regulated. Each trade routes through the configured regulated provider on Liquid EVM — KYC + accreditation enforced. Each Liquid EVM env has its own provider deployment with distinct adapter/router contracts + onboarding host:
+Stocks (AAPL, MSFT, NVDA, TSLA, GOOGL, AMZN, META) + private secondaries (OpenAI, Anthropic, SpaceX, Stripe) are **BOTH** regulated. Each trade routes through the configured regulated provider — KYC + accreditation enforced. Each regulated EVM env has its own provider deployment with distinct adapter/router contracts + onboarding host:
 
-| Liquid EVM env | chainId | onboarding (jurisdiction-neutral default) |
+| regulated EVM env | chainId | onboarding (jurisdiction-neutral default) |
 |---|---|---|
 | Mainnet | 8675309 | `https://id.lux.network/onboarding` |
 | Testnet | 8675310 | `https://id.lux-test.network/onboarding` |
@@ -160,7 +160,7 @@ Declared in `main.tsx` as `provider={{ name: 'Regulated Securities Provider', en
 Cross-chain via [`~/work/lux/bridge`](https://github.com/luxfi/bridge) — MPC 2-of-3 threshold custody, Warp cross-chain messaging, and 15+ source chain integrations:
 - **Zoo ↔ Lux**: native Warp (sub-second finality, shared quantum finality via Q-Chain)
 - **Zoo ↔ Hanzo**: Warp (AI-chain interop)
-- **Zoo ↔ Liquid EVM**: Warp + KYC attestation passthrough (regulated digital securities chain)
+- **Zoo ↔ regulated EVM**: Warp + KYC attestation passthrough (regulated digital securities chain)
 - **Zoo ↔ external EVMs**: `dex.lux.network` gateway (Circle CCTP, LayerZero, Wormhole, etc.)
 
 Zoo-side bridge contracts deployed in `~/work/zoo/contracts` via `broadcast/DeployZooBridge.s.sol/200200/`, `200201/`, `200202/`.

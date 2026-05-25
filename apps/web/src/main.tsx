@@ -43,7 +43,7 @@ createRoot(document.getElementById('root')!).render(
     dex={{ kind: 'gateway', url: 'https://dex.lux.network' }}
 
     // ─── Regulated securities gate ──────────────────────────────────
-    // Stocks + private secondaries are regulated. Each Liquid EVM env
+    // Stocks + private secondaries are regulated. Each regulated EVM env
     // has its own provider adapter + KYC onboarding host. Adapter
     // addresses are populated by the regulated stack once deployed.
     provider={{
@@ -104,7 +104,7 @@ createRoot(document.getElementById('root')!).render(
     // assets from ~/work/lux/bridge (canonical, deterministic across
     // mainnet/testnet/devnet). Full 28-token list in featured-tokens.ts.
     featured={[
-      // Stocks (50%) — regulated, provider-gated (Liquid EVM Mainnet)
+      // Stocks (50%) — regulated, provider-gated (regulated mainnet)
       { chainId: LIQUID_MAINNET_ID, address: '0x0000000000000000000000000000000000000000', symbol: 'AAPL',  name: 'Apple Inc',  color: '#000000', regulated: true },
       { chainId: LIQUID_MAINNET_ID, address: '0x0000000000000000000000000000000000000000', symbol: 'MSFT',  name: 'Microsoft',  color: '#00A4EF', regulated: true },
       { chainId: LIQUID_MAINNET_ID, address: '0x0000000000000000000000000000000000000000', symbol: 'NVDA',  name: 'NVIDIA',     color: '#76B900', regulated: true },

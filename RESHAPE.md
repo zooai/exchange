@@ -17,14 +17,12 @@
 
 Rationale:
 - `@luxfi/exchange@1.0.9` is published on the public npm registry; ships
-  `canonicalChains`, `zooMainnet`, `liquidMainnet`, `LIQUID_*_ID`,
-  Tamagui+wagmi+router runtime — drop-in for Zoo.
-- `@liquidityio/exchange` is **not** published (`npm view ...` → 404).
-  Liquidity's exchange SPA at `~/work/liquidity/exchange/apps/web` is
-  a giant in-tree app, not an installable SDK. Even if it were,
-  Liquidity is jurisdiction-specific (US ATS/BD/TA) — Zoo is a
-  jurisdiction-neutral Lux-ecosystem network, so coupling Zoo's
-  client to a Liquidity SDK is the wrong axis.
+  `canonicalChains`, `zooMainnet`, plus Tamagui+wagmi+router runtime —
+  drop-in for Zoo.
+- Tenant-specific SPAs live in the tenant's own repo and are not
+  installable SDKs. Zoo is a jurisdiction-neutral Lux-ecosystem
+  network, so coupling Zoo's client to a tenant-specific SDK is the
+  wrong axis.
 - Path B (fork to `@luxfi/exchange`) is moot — that's already what
   exists and what Zoo consumes.
 
@@ -32,10 +30,10 @@ Rationale:
 
 | File | Before | After |
 |---|---|---|
-| `apps/web/src/main.tsx` | 132 lines, declared `LIQUID_MAINNET/TESTNET/DEVNET` locally, comments said "Liquidity provider gate" | 120 lines, imports `liquidMainnet, liquidTestnet, liquidDevnet, LIQUID_MAINNET_ID, LIQUID_TESTNET_ID, LIQUID_DEVNET_ID` from `@luxfi/exchange`, jurisdiction-neutral "regulated securities provider" wording |
+| `apps/web/src/main.tsx` | 132 lines, declared regulated-EVM chain IDs locally with tenant-branded wording | 120 lines, imports chain definitions from `@luxfi/exchange`, jurisdiction-neutral "regulated securities provider" wording |
 | `apps/web/package.json` | `@luxfi/exchange@^1.0.8` | `@luxfi/exchange@^1.0.9` (latest patch) |
-| `LLM.md` | "regulated provider (Liquidity, per-env)" + table "Liquidity Mainnet ..." with `id.satschel.com` urls | "regulated provider (per-env)" + jurisdiction-neutral wording; mentions Liquid EVM chain IDs (immutable, from SDK) without "Liquidity"/"satschel" brand text |
-| `README.md` | "Liquidity SecurityToken gate" | "Regulated securities gate" |
+| `LLM.md` | tenant-branded "regulated provider" wording + per-env onboarding URLs | "regulated provider (per-env)" + jurisdiction-neutral wording; mentions chain IDs (immutable, from SDK) without tenant brand text |
+| `README.md` | tenant-branded "SecurityToken gate" | "Regulated securities gate" |
 
 ## Bridge — same pattern
 
@@ -66,10 +64,10 @@ Total committed bridge `app/`: 4 files, ~120 LOC (entirely declarative — no JS
 
 ## Cross-brand isolation — verified
 
-- No `satschel` references in any source file.
-- "Liquidity" appears only in upstream SDK-internal chain definitions
-  (read-only — `@luxfi/exchange/dist/chains/canonical.js`).
-- `LIQUID_*_ID` symbols are imported from the SDK; not redeclared locally.
+- No tenant-brand references in any source file in this repo.
+- Tenant-specific chain names appear only in upstream SDK-internal
+  chain definitions (read-only — `@luxfi/exchange/dist/chains/canonical.js`).
+- Tenant chain ID symbols are imported from the SDK; not redeclared locally.
 - "Lux" appears only in `@luxfi/...` package names, which is canonical
   per the workspace rules.
 
